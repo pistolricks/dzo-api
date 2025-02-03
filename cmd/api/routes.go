@@ -18,6 +18,7 @@ func (app *application) routes() http.Handler {
 
 	router.HandlerFunc(http.MethodGet, "/v1/vendors", app.listVendorsHandler)
 	router.HandlerFunc(http.MethodPost, "/v1/vendors", app.requirePermission("vendors:write", app.createVendorHandler))
+	router.HandlerFunc(http.MethodGet, "/v1/vendors/:id", app.requirePermission("vendors:write", app.showVendorHandler))
 	router.HandlerFunc(http.MethodPatch, "/v1/vendors/:id", app.requirePermission("vendors:write", app.updateVendorHandler))
 	router.HandlerFunc(http.MethodDelete, "/v1/vendors/:id", app.requirePermission("vendors:write", app.deleteVendorHandler))
 
