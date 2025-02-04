@@ -103,7 +103,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	defer db.Close()
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			logger.Error(err.Error())
+		}
+	}(db)
 
 	logger.Info("database connection pool established")
 
