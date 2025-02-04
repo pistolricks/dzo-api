@@ -2,13 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/pistolricks/go-api-template/internal/extended"
-	"github.com/pistolricks/validation"
+	"io"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 )
 
 func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Request) {
@@ -20,26 +18,7 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	var input struct {
-		ID        string    `json:"id"`
-		CreatedAt time.Time `json:"-"`
-		Name      string    `json:"name"`
-		Src       string    `json:"src"`
-		Type      string    `json:"type"`
-		Size      int32     `json:"size"`
-		Width     float32   `json:"width"`
-		Height    float32   `json:"height"`
-		SortOrder int16     `json:"sort_order"`
-		UserID    string    `json:"user_id"`
-	}
-
-	err = app.readJSON(w, r, &input)
-	if err != nil {
-		app.badRequestResponse(w, r, err)
-		return
-	}
-
-	file, handler, err := r.FormFile(input.Src)
+	file, handler, err := r.FormFile("file")
 	if err != nil {
 		app.badRequestResponse(w, r, err)
 		return
@@ -50,9 +29,6 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 			app.badRequestResponse(w, r, err)
 		}
 	}(file)
-
-	var filename = handler.Filename
-	var option = handler.Header["Option"][0]
 
 	fmt.Println("Past readJSON")
 
@@ -69,36 +45,9 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 		}
 	}(dst)
 
-	content := &extended.Content{
-		ID:        input.ID,
-		CreatedAt: input.CreatedAt,
-		Name:      filename,
-		Src:       input.Src,
-		Type:      option,
-		Size:      input.Size,
-		Width:     input.Width,
-		Height:    input.Height,
-		SortOrder: input.SortOrder,
-		UserID:    input.UserID,
-	}
+	nbBytes, _ := io.Copy(dst, file)
 
-	v := validation.New()
-
-	if extended.ValidateContent(v, content); !v.Valid() {
-		app.failedValidationResponse(w, r, v.Errors)
-		return
-	}
-
-	err = app.extended.Contents.EncodeWebP(content)
-	if err != nil {
-		app.serverErrorResponse(w, r, err)
-		return
-	}
-
-	headers := make(http.Header)
-	headers.Set("Location", fmt.Sprintf("/v1/contents/%s", content.ID))
-
-	err = app.writeJSON(w, http.StatusCreated, envelope{"content": content}, headers)
+	err = app.writeJSON(w, http.StatusCreated, envelope{"content": nbBytes}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
