@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
+	"time"
 )
 
 func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +34,12 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 
 	fmt.Println("Past readJSON")
 
-	dst, err := app.createFile(w, r, handler.Filename)
+	fileExt := filepath.Ext(handler.Filename)
+	originalFileName := strings.TrimSuffix(filepath.Base(handler.Filename), filepath.Ext(handler.Filename))
+	now := time.Now()
+	filename := strings.ReplaceAll(strings.ToLower(originalFileName), " ", "-") + "-" + fmt.Sprintf("%v", now.Unix()) + fileExt
+
+	dst, err := app.createFile(w, r, filename)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return
