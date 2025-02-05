@@ -24,7 +24,7 @@ func (app *application) routes() http.Handler {
 
 	router.HandlerFunc(http.MethodPost, "/v1/upload/image", app.requirePermission("vendors:write", app.uploadImageHandler))
 
-	router.HandlerFunc(http.MethodGet, "/v1/users/activate", app.requirePermission("vendors:read", app.showActivateUserHandler))
+	router.HandlerFunc(http.MethodGet, "/v1/users/activate", app.showActivateUserHandler)
 	router.HandlerFunc(http.MethodPut, "/v1/users/activated", app.activateUserHandler)
 
 	router.HandlerFunc(http.MethodPost, "/v1/users", app.registerUserHandler)
