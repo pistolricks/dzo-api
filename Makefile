@@ -53,8 +53,13 @@ db/migrations/new:
 .PHONY: db/migrations/up
 db/migrations/up: confirm
 	@echo 'Running up migrations...'
-	migrate -path ./migrations -database ${GO_TEMPLATE_API_DB_DSN} up
+	migrate -path ./migrations -database=${GO_TEMPLATE_API_DB_DSN} up
 
+## db/migrations/up: apply all down database migrations
+.PHONY: db/migrations/down
+db/migrations/down: confirm
+	@echo 'Running down migrations...'
+	migrate -path ./migrations -database=${GO_TEMPLATE_API_DB_DSN} down
 # ==================================================================================== #
 # QUALITY CONTROL
 # ==================================================================================== #
