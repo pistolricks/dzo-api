@@ -3,7 +3,9 @@ module github.com/pistolricks/go-api-template
 go 1.23.5
 
 require (
+	github.com/Boostport/address v0.12.0
 	github.com/devedge/imagehash v0.0.0-20180324030135-7061aa3b4066
+	github.com/hashicorp/go-multierror v1.1.1
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/lib/pq v1.10.9
 	github.com/pistolricks/mailer v0.1.0
@@ -16,8 +18,9 @@ require (
 require (
 	github.com/disintegration/imaging v1.6.2 // indirect
 	github.com/go-mail/mail/v2 v2.3.0 // indirect
-	github.com/paulmach/go.geojson v1.5.0 // indirect
+	github.com/hashicorp/errwrap v1.0.0 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/image v0.23.0 // indirect
+	golang.org/x/text v0.22.0 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 )
