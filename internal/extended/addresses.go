@@ -3,12 +3,24 @@ package extended
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"github.com/Boostport/address"
 	"github.com/lib/pq"
-	"log"
 	"time"
 )
+
+type formatData struct {
+	Country                     string
+	CountryEnglish              string
+	Name                        string
+	Organization                string
+	StreetAddress               []string
+	DependentLocality           string
+	Locality                    string
+	AdministrativeArea          string
+	AdministrativeAreaPostalKey string
+	PostCode                    string
+	SortingCode                 string
+}
 
 type Address struct {
 	ID                 int64                  `json:"id"`
@@ -26,7 +38,7 @@ type Address struct {
 	Lng                float64                `json:"lng,omitempty"`
 }
 
-func ValidateAddress(a *Address) []any {
+func ValidateAddress(a *Address) (address.Address, error) {
 	addr, err := address.NewValid(
 		address.WithCountry(a.Country), // Must be an ISO 3166-1 country code
 		address.WithName(a.Name),
@@ -42,14 +54,7 @@ func ValidateAddress(a *Address) []any {
 		address.WithPostCode(a.PostCode),
 	)
 
-	if err != nil {
-		// If there was an error and you want to find out which validations failed, use errors.Is()
-		if errors.Is(err, address.ErrInvalidCountryCode) {
-			log.Fatalf("Invalid country code")
-		}
-	}
-
-	return []any{addr}
+	return addr, err
 }
 
 type AddressModel struct {
