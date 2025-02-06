@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS addresses
     created_at timestamp(0) with time zone NOT NULL DEFAULT NOW(),
     country text NOT NULL,
     name text NOT NULL,
-    display_name text NOT NULL,
     organization text NOT NULL,
     street_address text[] NOT NULL,
     locality text NOT NULL,
@@ -13,8 +12,6 @@ CREATE TABLE IF NOT EXISTS addresses
     sorting_code text NOT NULL,
     data jsonb NOT NULL,
     lat float NOT NULL,
-    lng float NOT NULL,
-    coordinates geography(Point, 4326) NOT NULL
-
+    lng float NOT NULL
 
 )

@@ -13,18 +13,16 @@ type Address struct {
 	ID                 int64                  `json:"id"`
 	CreatedAt          time.Time              `json:"created_at"`
 	Country            string                 `json:"country"`
-	Name               string                 `json:"name"`
-	Organization       string                 `json:"organization"`
+	Name               string                 `json:"name,omitempty"`
+	Organization       string                 `json:"organization,omitempty"`
 	StreetAddress      []string               `json:"street_address"`
 	Locality           string                 `json:"locality"`
 	AdministrativeArea string                 `json:"administrative_area"`
 	PostCode           string                 `json:"post_code"`
 	SortingCode        string                 `json:"sorting_code"`
 	Data               map[string]interface{} `json:"-"`
-	Lat                float64                `json:"lat"`
-	Lng                float64                `json:"lng"`
-	Coordinates        []float64              `json:"-"`
-	DisplayName        string                 `json:"display_name"`
+	Lat                float64                `json:"lat,omitempty"`
+	Lng                float64                `json:"lng,omitempty"`
 }
 
 func ValidateAddress(a *Address) []any {
@@ -32,9 +30,7 @@ func ValidateAddress(a *Address) []any {
 		address.WithCountry(a.Country), // Must be an ISO 3166-1 country code
 		address.WithName(a.Name),
 		address.WithOrganization(a.Organization),
-		address.WithStreetAddress([]string{
-			a.StreetAddress[0],
-		}),
+		address.WithStreetAddress(a.StreetAddress),
 		address.WithLocality(a.Locality),
 		address.WithAdministrativeArea(a.AdministrativeArea), // If the country has a pre-defined list of admin areas (like here), you must use the key and not the name
 		address.WithPostCode(a.PostCode),
@@ -72,14 +68,14 @@ type AddressModel struct {
 
 func (m AddressModel) Insert(address *Address) error {
 	query := `
-	INSERT INTO addresses (country,name,display_name,organization,street_address,locality,administrative_area,post_code,sorting_code,data,lat,lng,coordinates)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-	RETURNING id, created_at, display_name;
+	INSERT INTO addresses (country,name,organization,street_address,locality,administrative_area,post_code,sorting_code,data,lat,lng)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+	RETURNING id, created_at, name;
 	`
-	args := []any{address.Country, address.Name, address.DisplayName, address.Organization, pq.Array(address.StreetAddress), address.Locality, address.AdministrativeArea, address.PostCode, address.SortingCode, address.Data, address.Lat, address.Lng, pq.Array(address.Coordinates)}
+	args := []any{address.Country, address.Name, address.Organization, pq.Array(address.StreetAddress), address.Locality, address.AdministrativeArea, address.PostCode, address.SortingCode, address.Data, address.Lat, address.Lng}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	return m.DB.QueryRowContext(ctx, query, args...).Scan(&address.ID, &address.CreatedAt, &address.DisplayName)
+	return m.DB.QueryRowContext(ctx, query, args...).Scan(&address.ID, &address.CreatedAt, &address.Name)
 }
