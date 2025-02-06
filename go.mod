@@ -20,6 +20,7 @@ require (
 	github.com/doppiogancio/go-nominatim v2.0.1+incompatible // indirect
 	github.com/go-mail/mail/v2 v2.3.0 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
+	github.com/muesli/gominatim v0.1.0 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/image v0.23.0 // indirect
 	golang.org/x/text v0.22.0 // indirect

@@ -4,9 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"github.com/Boostport/address"
-	nominatim "github.com/doppiogancio/go-nominatim"
-	"github.com/doppiogancio/go-nominatim/shared"
 	"github.com/lib/pq"
+	"github.com/muesli/gominatim"
 	"time"
 )
 
@@ -59,10 +58,21 @@ func ValidateAddress(a *Address) (address.Address, error) {
 	return addr, err
 }
 
-func GetCoordinates(a string) (*shared.Coordinate, error) {
-	coordinate, err := nominatim.Geocode(a)
+func GetCoordinates(a address.Address) ([]gominatim.SearchResult, error) {
+	gominatim.SetServer("https://nominatim.openstreetmap.org/")
 
-	return coordinate, err
+	//Get by a Querystring
+
+	//Get by City
+	qry := gominatim.SearchQuery{
+		Q:          a.StreetAddress[0],
+		City:       a.Locality,
+		State:      a.AdministrativeArea,
+		Postalcode: a.PostCode,
+	}
+	resp, qer := qry.Get() // Returns []gominatim.SearchResult
+
+	return resp, qer
 }
 
 type AddressModel struct {
