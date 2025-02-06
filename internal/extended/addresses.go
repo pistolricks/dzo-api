@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"github.com/Boostport/address"
+	nominatim "github.com/doppiogancio/go-nominatim"
+	"github.com/doppiogancio/go-nominatim/shared"
 	"github.com/lib/pq"
 	"time"
 )
@@ -55,6 +57,12 @@ func ValidateAddress(a *Address) (address.Address, error) {
 	)
 
 	return addr, err
+}
+
+func GetCoordinates(a string) (*shared.Coordinate, error) {
+	coordinate, err := nominatim.Geocode(a)
+
+	return coordinate, err
 }
 
 type AddressModel struct {

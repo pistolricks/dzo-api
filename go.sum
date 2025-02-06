@@ -4,6 +4,8 @@ github.com/devedge/imagehash v0.0.0-20180324030135-7061aa3b4066 h1:+QbuEqZjC9bIW
 github.com/devedge/imagehash v0.0.0-20180324030135-7061aa3b4066/go.mod h1:FdoOQDHSR0xYTQCl+G8ZhqsB5dKYbyxVWUoUFW7F0Lw=
 github.com/disintegration/imaging v1.6.2 h1:w1LecBlG2Lnp8B3jk5zSuNqd7b4DXhcjwek1ei82L+c=
 github.com/disintegration/imaging v1.6.2/go.mod h1:44/5580QXChDfwIclfc/PCwrr44amcmDAg8hxG0Ewe4=
+github.com/doppiogancio/go-nominatim v2.0.1+incompatible h1:S0PYXIVKwV6vF+JNBSO6T7BdvH4Ktuaf5HVL51i0lyQ=
+github.com/doppiogancio/go-nominatim v2.0.1+incompatible/go.mod h1:lePiHgediF5zQ6qRyynsDoilUOBVFSpOpsWiDd21Dic=
 github.com/go-mail/mail/v2 v2.3.0 h1:wha99yf2v3cpUzD1V9ujP404Jbw2uEvs+rBJybkdYcw=
 github.com/go-mail/mail/v2 v2.3.0/go.mod h1:oE2UK8qebZAjjV1ZYUpY7FPnbi/kIU53l1dmqPRb4go=
 github.com/hashicorp/errwrap v1.0.0 h1:hLrqtEDnRye3+sgx6z4qVLNuviH3MR5aQ0ykNJa/UYA=

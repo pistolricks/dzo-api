@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	address2 "github.com/Boostport/address"
+	"github.com/lib/pq"
 	"github.com/pistolricks/go-api-template/internal/extended"
 	"net/http"
 )
@@ -31,9 +33,13 @@ func (app *application) createAddressHandler(w http.ResponseWriter, r *http.Requ
 
 	address, error := extended.ValidateAddress(addr)
 
+	addrStr := fmt.Sprintf("%v, %v, %v, %v", pq.Array(addr.StreetAddress), addr.Locality, addr.PostCode, addr.Country)
+
+	co, coerr := extended.GetCoordinates(addrStr)
+
 	headers := make(http.Header)
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"address": address, "errors": error}, headers)
+	err = app.writeJSON(w, http.StatusCreated, envelope{"address": address, "coordinates": co, "c-errors": coerr, "errors": error}, headers)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
