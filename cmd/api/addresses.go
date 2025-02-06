@@ -31,11 +31,11 @@ func (app *application) createAddressHandler(w http.ResponseWriter, r *http.Requ
 
 	address, error := extended.ValidateAddress(addr)
 
-	co, coerr := extended.GetCoordinates(address)
+	co, coerr := extended.GetAddressOSM(address)
 
 	headers := make(http.Header)
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"address": address, "coordinates": co[0], "c-errors": coerr, "errors": error}, headers)
+	err = app.writeJSON(w, http.StatusCreated, envelope{"address": address, "osm": co[0], "c-errors": coerr, "errors": error}, headers)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

@@ -58,7 +58,7 @@ func ValidateAddress(a *Address) (address.Address, error) {
 	return addr, err
 }
 
-func GetCoordinates(a address.Address) ([]gominatim.SearchResult, error) {
+func GetAddressOSM(a address.Address) ([]gominatim.SearchResult, error) {
 	gominatim.SetServer("https://nominatim.openstreetmap.org/")
 
 	//Get by a Querystring
