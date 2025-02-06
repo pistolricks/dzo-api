@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (app *application) createAdressHandler(w http.ResponseWriter, r *http.Request) {
+func (app *application) createAddressHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		StreetAddress      []string `json:"street_address"`
 		Locality           string   `json:"locality"`

@@ -3,9 +3,10 @@ package extended
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"github.com/Boostport/address"
-	"github.com/hashicorp/go-multierror"
 	"github.com/lib/pq"
+	"log"
 	"time"
 )
 
@@ -30,6 +31,11 @@ func ValidateAddress(a *Address) []any {
 		address.WithCountry(a.Country), // Must be an ISO 3166-1 country code
 		address.WithName(a.Name),
 		address.WithOrganization(a.Organization),
+		/*
+			address.WithStreetAddress([]string{
+				"525 Collins Street",
+			}),
+		*/
 		address.WithStreetAddress(a.StreetAddress),
 		address.WithLocality(a.Locality),
 		address.WithAdministrativeArea(a.AdministrativeArea), // If the country has a pre-defined list of admin areas (like here), you must use the key and not the name
@@ -37,29 +43,13 @@ func ValidateAddress(a *Address) []any {
 	)
 
 	if err != nil {
-		// If there was an error and you want to find out which validations failed,
-		// type switch it as a *multierror.Error to access the list of errors
-		if merr, ok := err.(*multierror.Error); ok {
-			for _, subErr := range merr.Errors {
-				if subErr == address.ErrInvalidCountryCode {
-					// log.Fatalf(subErr)
-				}
-			}
+		// If there was an error and you want to find out which validations failed, use errors.Is()
+		if errors.Is(err, address.ErrInvalidCountryCode) {
+			log.Fatalf("Invalid country code")
 		}
 	}
 
-	lang := "en"
-
-	postalStringFormatter := address.PostalLabelFormatter{
-		Output:            address.StringOutputter{},
-		OriginCountryCode: "US", // We are sending from USA
-	}
-	psf := postalStringFormatter.Format(addr, lang)
-
-	args := []any{addr, psf}
-
-	return args
-
+	return []any{addr}
 }
 
 type AddressModel struct {
