@@ -27,6 +27,7 @@ require (
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/mazznoer/csscolorparser v0.1.5 // indirect
 	github.com/muesli/gominatim v0.1.0 // indirect
+	github.com/paulmach/go.geojson v1.5.0 // indirect
 	github.com/tkrajina/gpxgo v1.4.0 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/image v0.24.0 // indirect

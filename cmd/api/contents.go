@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/pistolricks/go-api-template/internal/extended"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -53,8 +54,9 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 	}(dst)
 
 	nbBytes, _ := io.Copy(dst, file)
+	hash := extended.HashImage(filepath.Join("uploads", filename))
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"content": nbBytes}, nil)
+	err = app.writeJSON(w, http.StatusCreated, envelope{"path": filepath.Join("uploads", filename), "type": r.FormValue("type"), "size": nbBytes, "hash": hash}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

@@ -2,11 +2,31 @@ package main
 
 import (
 	address2 "github.com/Boostport/address"
+	geojson "github.com/paulmach/go.geojson"
 	"github.com/pistolricks/go-api-template/internal/extended"
 	"net/http"
 )
 
+type Position struct {
+	Latitude  float64 `json:"lat"`
+	Longitude float64 `json:"lng"`
+}
+
+type XYZData struct {
+	Tags []string `json:"tags"`
+}
+
+func NewGeoJSON(position Position, tags []string) ([]byte, error) {
+	featureCollection := geojson.NewFeatureCollection()
+	feature := geojson.NewPointFeature([]float64{position.Longitude, position.Latitude})
+	feature.SetProperty("@ns:com:here:xyz", XYZData{Tags: tags})
+	featureCollection.AddFeature(feature)
+	return featureCollection.MarshalJSON()
+}
+
 func (app *application) createAddressHandler(w http.ResponseWriter, r *http.Request) {
+	headers := make(http.Header)
+
 	var input struct {
 		StreetAddress      []string `json:"street_address"`
 		Locality           string   `json:"locality"`
@@ -33,9 +53,7 @@ func (app *application) createAddressHandler(w http.ResponseWriter, r *http.Requ
 
 	co, coerr := extended.GetAddressOSM(address)
 
-	headers := make(http.Header)
-
-	err = app.writeJSON(w, http.StatusCreated, envelope{"address": address, "osm": co[0], "c-errors": coerr, "errors": error}, headers)
+	err = app.writeJSON(w, http.StatusCreated, envelope{"address": address, "osm": co, "c-errors": coerr, "errors": error}, headers)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
