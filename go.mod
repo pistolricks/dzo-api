@@ -30,6 +30,7 @@ require (
 	github.com/muesli/gominatim v0.1.0 // indirect
 	github.com/paulmach/go.geojson v1.5.0 // indirect
 	github.com/speps/go-hashids v2.0.0+incompatible // indirect
+	github.com/speps/go-hashids/v2 v2.0.1 // indirect
 	github.com/tkrajina/gpxgo v1.4.0 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/image v0.24.0 // indirect
