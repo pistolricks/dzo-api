@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/Boostport/address"
+	"github.com/indrasaputra/hashids"
 	"github.com/lib/pq"
 	"github.com/muesli/gominatim"
 	"time"
@@ -24,7 +25,7 @@ type formatData struct {
 }
 
 type Address struct {
-	ID                 int64                  `json:"id"`
+	ID                 hashids.ID             `json:"id"`
 	CreatedAt          time.Time              `json:"created_at"`
 	Country            string                 `json:"country"`
 	Name               string                 `json:"name,omitempty"`

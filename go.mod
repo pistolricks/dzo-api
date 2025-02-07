@@ -25,9 +25,11 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/golang/geo v0.0.0-20230421003525-6adc56603217 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
+	github.com/indrasaputra/hashids v0.2.0 // indirect
 	github.com/mazznoer/csscolorparser v0.1.5 // indirect
 	github.com/muesli/gominatim v0.1.0 // indirect
 	github.com/paulmach/go.geojson v1.5.0 // indirect
+	github.com/speps/go-hashids v2.0.0+incompatible // indirect
 	github.com/tkrajina/gpxgo v1.4.0 // indirect
 	golang.org/x/crypto v0.32.0 // indirect
 	golang.org/x/image v0.24.0 // indirect

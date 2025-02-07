@@ -4,19 +4,20 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"github.com/devedge/imagehash"
+	"github.com/indrasaputra/hashids"
 	"github.com/pistolricks/validation"
 	"time"
 )
 
 type Content struct {
-	ID        int64     `json:"id"`
-	CreatedAt time.Time `json:"-"`
-	Name      string    `json:"name,omitempty"`
-	Hash      string    `json:"hash,omitempty"`
-	Src       string    `json:"src"`
-	Type      string    `json:"type,omitempty"`
-	Size      int32     `json:"size,omitempty"`
-	UserID    string    `json:"user_id"`
+	ID        hashids.ID `json:"id"`
+	CreatedAt time.Time  `json:"-"`
+	Name      string     `json:"name,omitempty"`
+	Hash      string     `json:"hash,omitempty"`
+	Src       string     `json:"src"`
+	Type      string     `json:"type,omitempty"`
+	Size      int32      `json:"size,omitempty"`
+	UserID    string     `json:"user_id"`
 }
 
 func ValidateContent(v *validation.Validator, content *Content) {

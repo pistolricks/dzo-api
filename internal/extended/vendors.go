@@ -5,19 +5,20 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/indrasaputra/hashids"
 	"github.com/lib/pq"
 	"github.com/pistolricks/validation"
 	"time"
 )
 
 type Vendor struct {
-	ID        int64     `json:"id"`
-	CreatedAt time.Time `json:"-"`
-	Title     string    `json:"title"`
-	Year      int32     `json:"year,omitempty"`
-	Runtime   Runtime   `json:"runtime,omitempty"`
-	Genres    []string  `json:"genres,omitempty"`
-	Version   int32     `json:"version"`
+	ID        hashids.ID `json:"id"`
+	CreatedAt time.Time  `json:"-"`
+	Title     string     `json:"title"`
+	Year      int32      `json:"year,omitempty"`
+	Runtime   Runtime    `json:"runtime,omitempty"`
+	Genres    []string   `json:"genres,omitempty"`
+	Version   int32      `json:"version"`
 }
 
 func ValidateVendor(v *validation.Validator, vendor *Vendor) {
