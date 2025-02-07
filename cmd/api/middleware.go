@@ -1,17 +1,14 @@
 package main
 
 import (
-	"encoding/hex"
 	"errors"
 	"expvar"
 	"fmt"
-	"github.com/devedge/imagehash"
 	"github.com/pistolricks/models/cmd/models"
 	"github.com/pistolricks/validation"
 	"github.com/tomasen/realip"
 	"golang.org/x/time/rate"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 	"sync"
@@ -267,73 +264,4 @@ func (app *application) metrics(next http.Handler) http.Handler {
 		duration := time.Since(start).Microseconds()
 		totalProcessingTimeMicroseconds.Add(duration)
 	})
-}
-
-type hashImageRequest struct {
-	wrapped http.ResponseWriter
-	request *http.Request
-	id      string
-	src     string
-	userId  string
-}
-
-func createHashId(ID int64) string {
-	id := HashID(ID)
-	fmt.Println(id)
-
-	return id
-}
-
-func (app *application) newHashImageRequest(r *http.Request) *hashImageRequest {
-	var input struct {
-		Src    string `json:"src"`
-		UserId int64  `json:"user_id"`
-	}
-
-	src, _ := imagehash.OpenImg(input.Src)
-	hashLen := 8
-	hash, _ := imagehash.Dhash(src, hashLen)
-	id := hex.EncodeToString(hash)
-
-	user := app.contextGetUser(r)
-
-	sq := createHashId(user.ID)
-
-	return &hashImageRequest{
-		request: r,
-		id:      id,
-		src:     input.Src,
-		userId:  sq,
-	}
-}
-
-type MultipartFormValues struct {
-	ID     string
-	Src    os.File
-	UserID string
-}
-
-func (app *application) hashImage(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		var input struct {
-			Src    os.File `json:"src"`
-			UserID string  `json:"user_id"`
-		}
-		rq := app.newHashImageRequest(r)
-
-		mpf := MultipartFormValues{
-			ID:     rq.id,
-			Src:    input.Src,
-			UserID: rq.userId,
-		}
-
-		err := app.readJSON(w, r, &mpf)
-		if err != nil {
-			app.badRequestResponse(w, r, err)
-		}
-
-		next.ServeHTTP(w, r)
-
-	}
 }

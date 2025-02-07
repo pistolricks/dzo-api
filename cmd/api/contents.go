@@ -160,3 +160,14 @@ func (app *application) listContentsHandler(w http.ResponseWriter, r *http.Reque
 		app.serverErrorResponse(w, r, err)
 	}
 }
+
+func (app *application) handleRequest(w http.ResponseWriter, r *http.Request, filename string) {
+	fileBytes, err := os.ReadFile(filename)
+	if err != nil {
+		panic(err)
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Write(fileBytes)
+	return
+}

@@ -3,6 +3,7 @@ package main
 import (
 	"expvar"
 	"github.com/julienschmidt/httprouter"
+	"github.com/pistolricks/go-api-template/ui"
 	"net/http"
 )
 
@@ -13,6 +14,10 @@ func (app *application) routes() http.Handler {
 	router.NotFound = http.HandlerFunc(app.notFoundResponse)
 
 	router.MethodNotAllowed = http.HandlerFunc(app.methodNotAllowedResponse)
+
+	/* DO NOT FORGET THE *filepath for the fileserver */
+	router.Handler(http.MethodGet, "/uploads/*filepath", http.FileServerFS(ui.Files))
+	router.Handler(http.MethodGet, "/static/*filepath", http.FileServerFS(ui.Files))
 
 	router.HandlerFunc(http.MethodGet, "/v1/healthcheck", app.healthcheckHandler)
 

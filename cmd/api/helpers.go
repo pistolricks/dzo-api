@@ -11,6 +11,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -159,4 +160,15 @@ func HashID(id int64) string {
 	hashedID := hex.EncodeToString(hasher.Sum(nil))
 
 	return hashedID
+}
+
+func (app *application) handleFileRequest(w http.ResponseWriter, r *http.Request) {
+	fileBytes, err := os.ReadFile("read.txt")
+	if err != nil {
+		panic(err)
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/octet-stream")
+	w.Write(fileBytes)
+	return
 }
