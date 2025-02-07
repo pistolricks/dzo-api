@@ -47,7 +47,7 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 	d, _ := h.DecodeWithError(e)
 	fmt.Println(d)
 
-	pathway := filepath.Join("uploads", e)
+	pathway := filepath.Join("ui/static", e)
 	fileExt := filepath.Ext(handler.Filename)
 	originalFileName := strings.TrimSuffix(filepath.Base(handler.Filename), filepath.Ext(handler.Filename))
 	now := time.Now()
@@ -101,7 +101,7 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 }
 
 func (app *application) createFile(w http.ResponseWriter, r *http.Request, path string, filename string) (*os.File, error) {
-	// Create an uploads directory if it doesn’t exist
+	// Create an static directory if it doesn’t exist
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		err := os.Mkdir(path, 0755)
 		if err != nil {

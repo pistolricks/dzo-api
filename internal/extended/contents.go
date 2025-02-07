@@ -10,6 +10,7 @@ import (
 	"github.com/indrasaputra/hashids"
 	"github.com/pistolricks/validation"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -47,6 +48,9 @@ type ContentModel struct {
 }
 
 func (m ContentModel) Insert(content *Content) error {
+
+	content.Src = strings.ReplaceAll(content.Src, "ui/static", "static")
+	
 	query := `
 	INSERT INTO contents (name,original,hash,src,type,size,user_id)
 	VALUES ($1, $2, $3, $4, $5, $6, $7)
