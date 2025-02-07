@@ -24,6 +24,14 @@ func (app *application) errorResponse(w http.ResponseWriter, r *http.Request, st
 	}
 }
 
+func (app *application) duplicateErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
+	app.logError(r, err)
+
+	message := "Duplicate Entry"
+
+	app.errorResponse(w, r, http.StatusInternalServerError, message)
+}
+
 func (app *application) serverErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
 	app.logError(r, err)
 

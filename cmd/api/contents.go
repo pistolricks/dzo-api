@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/pistolricks/go-api-template/internal/extended"
+	"github.com/pistolricks/validation"
 	"github.com/speps/go-hashids/v2"
 	"io"
 	"mime/multipart"
@@ -67,9 +68,33 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 
 	nbBytes, _ := io.Copy(dst, file)
 
-	hash := extended.HashImage(filepath.Join(pathway, filename))
+	fp := filepath.Join(pathway, filename)
+	hash := extended.HashImage(fp)
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"userId": e, "path": filepath.Join(pathway, filename), "type": r.FormValue("type"), "size": nbBytes, "hash": hash}, nil)
+	content := &extended.Content{
+		Name:     filename,
+		Original: fp,
+		Hash:     hash,
+		Src:      fp,
+		Type:     r.FormValue("type"),
+		Size:     nbBytes,
+		UserID:   e,
+	}
+
+	v := validation.New()
+
+	if extended.ValidateContent(v, content); !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	err = app.extended.Contents.Insert(content)
+	if err != nil {
+		app.duplicateErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusCreated, envelope{"userId": e, "path": fp, "type": r.FormValue("type"), "size": nbBytes, "hash": hash}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
@@ -91,4 +116,47 @@ func (app *application) createFile(w http.ResponseWriter, r *http.Request, path 
 	}
 
 	return dst, nil
+}
+
+func (app *application) listContentsHandler(w http.ResponseWriter, r *http.Request) {
+	var input struct {
+		Name     string
+		Original string
+		Src      string
+		Type     string
+		UserID   string
+		extended.Filters
+	}
+
+	v := validation.New()
+
+	qs := r.URL.Query()
+
+	input.Name = app.readString(qs, "name", "")
+	input.Original = app.readString(qs, "original", "")
+	input.Src = app.readString(qs, "src", "")
+	input.Type = app.readString(qs, "type", "")
+	input.UserID = app.readString(qs, "user_id", "")
+
+	input.Filters.Page = app.readInt(qs, "page", 1, v)
+	input.Filters.PageSize = app.readInt(qs, "page_size", 20, v)
+
+	input.Filters.Sort = app.readString(qs, "sort", "id")
+	input.Filters.SortSafelist = []string{"id", "name", "original", "type", "user_id", "-id", "-name", "-original", "-type", "-user_id"}
+
+	if extended.ValidateFilters(v, input.Filters); !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	contents, metadata, err := app.extended.Contents.GetAll(input.Name, input.Original, input.Src, input.Type, input.UserID, input.Filters)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"contents": contents, "metadata": metadata}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
 }
