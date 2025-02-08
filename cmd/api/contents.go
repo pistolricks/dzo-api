@@ -124,6 +124,7 @@ func (app *application) listContentsHandler(w http.ResponseWriter, r *http.Reque
 		Original string
 		Src      string
 		Type     string
+		Size     int64
 		UserID   string
 		extended.Filters
 	}
@@ -149,7 +150,7 @@ func (app *application) listContentsHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	contents, metadata, err := app.extended.Contents.GetAll(input.Name, input.Original, input.Src, input.Type, input.UserID, input.Filters)
+	contents, metadata, err := app.extended.Contents.GetAll(input.Name, input.Original, input.Src, input.Type, input.Size, input.UserID, input.Filters)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return
@@ -159,15 +160,4 @@ func (app *application) listContentsHandler(w http.ResponseWriter, r *http.Reque
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
-}
-
-func (app *application) handleRequest(w http.ResponseWriter, r *http.Request, filename string) {
-	fileBytes, err := os.ReadFile(filename)
-	if err != nil {
-		panic(err)
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/octet-stream")
-	w.Write(fileBytes)
-	return
 }

@@ -50,7 +50,7 @@ type ContentModel struct {
 func (m ContentModel) Insert(content *Content) error {
 
 	content.Src = strings.ReplaceAll(content.Src, "ui/static", "static")
-	
+
 	query := `
 	INSERT INTO contents (name,original,hash,src,type,size,user_id)
 	VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -116,10 +116,10 @@ func (m ContentModel) DecodeWebP(content *Content) error {
 	return nil
 }
 
-func (m ContentModel) GetAll(name string, original string, src string, mimeType string, userId string, filters Filters) ([]*Content, Metadata, error) {
+func (m ContentModel) GetAll(name string, original string, src string, mimeType string, size int64, userId string, filters Filters) ([]*Content, Metadata, error) {
 
 	query := fmt.Sprintf(`
-	SELECT count(*) OVER(), id, name, original, src, type, user_id
+	SELECT count(*) OVER(), id, name, original, src, type, size, user_id
 	FROM contents
 	WHERE (to_tsvector('simple', name) @@ plainto_tsquery('simple', $1) OR $1 = '')
 	ORDER BY %s %s, id ASC
@@ -153,6 +153,7 @@ func (m ContentModel) GetAll(name string, original string, src string, mimeType 
 			&content.Original,
 			&content.Src,
 			&content.Type,
+			&content.Size,
 			&content.UserID,
 		)
 		if err != nil {
