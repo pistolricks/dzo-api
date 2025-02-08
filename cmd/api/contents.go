@@ -127,6 +127,7 @@ func (app *application) createFile(w http.ResponseWriter, r *http.Request, path 
 
 func (app *application) listContentsHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
+		Hash     string
 		Name     string
 		Original string
 		Src      string
@@ -140,24 +141,21 @@ func (app *application) listContentsHandler(w http.ResponseWriter, r *http.Reque
 
 	qs := r.URL.Query()
 
-	input.Name = app.readString(qs, "name", "")
 	input.Original = app.readString(qs, "original", "")
-	input.Src = app.readString(qs, "src", "")
 	input.Type = app.readString(qs, "type", "")
-	input.UserID = app.readString(qs, "user_id", "")
 
 	input.Filters.Page = app.readInt(qs, "page", 1, v)
 	input.Filters.PageSize = app.readInt(qs, "page_size", 20, v)
 
 	input.Filters.Sort = app.readString(qs, "sort", "id")
-	input.Filters.SortSafelist = []string{"id", "name", "original", "type", "user_id", "-id", "-name", "-original", "-type", "-user_id"}
+	input.Filters.SortSafelist = []string{"id", "original", "type", "-id", "-original", "-type"}
 
 	if extended.ValidateFilters(v, input.Filters); !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 		return
 	}
 
-	contents, metadata, err := app.extended.Contents.GetAll(input.Name, input.Original, input.Src, input.Type, input.Size, input.UserID, input.Filters)
+	contents, metadata, err := app.extended.Contents.GetAll(input.Hash, input.Name, input.Original, input.Src, input.Type, input.Size, input.UserID, input.Filters)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return

@@ -116,10 +116,10 @@ func (m ContentModel) DecodeWebP(content *Content) error {
 	return nil
 }
 
-func (m ContentModel) GetAll(name string, original string, src string, mimeType string, size int64, userId string, filters Filters) ([]*Content, Metadata, error) {
+func (m ContentModel) GetAll(hash string, name string, original string, src string, mimeType string, size int64, userId string, filters Filters) ([]*Content, Metadata, error) {
 
 	query := fmt.Sprintf(`
-	SELECT count(*) OVER(), id, name, original, src, type, size, user_id
+	SELECT count(*) OVER(), id, hash, name, original, src, type, size, user_id
 	FROM contents
 	WHERE (to_tsvector('simple', name) @@ plainto_tsquery('simple', $1) OR $1 = '')
 	ORDER BY %s %s, id ASC
@@ -149,6 +149,7 @@ func (m ContentModel) GetAll(name string, original string, src string, mimeType 
 		err := rows.Scan(
 			&totalRecords,
 			&content.ID,
+			&content.Hash,
 			&content.Name,
 			&content.Original,
 			&content.Src,
