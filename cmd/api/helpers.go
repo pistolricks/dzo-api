@@ -9,6 +9,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/pistolricks/validation"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -171,4 +172,14 @@ func (app *application) handleFileRequest(w http.ResponseWriter, r *http.Request
 	w.Header().Set("Content-Type", "application/octet-stream")
 	w.Write(fileBytes)
 	return
+}
+
+func (app *application) handleRenameFile(o string, n string) error {
+	OriginalPath := o
+	NewPath := n
+	e := os.Rename(OriginalPath, NewPath)
+	if e != nil {
+		log.Fatal(e)
+	}
+	return nil
 }

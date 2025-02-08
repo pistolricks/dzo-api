@@ -70,11 +70,19 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 	fp := filepath.Join(pathway, filename)
 	hash := extended.HashImage(fp)
 
+	hashedFileName := hash + fileExt
+	hfp := filepath.Join(pathway, hashedFileName)
+
+	herr := app.handleRenameFile(fp, hfp)
+	if herr != nil {
+		app.badRequestResponse(w, r, herr)
+	}
+
 	content := &extended.Content{
-		Name:     filename,
-		Original: fp,
+		Name:     hashedFileName,
+		Original: originalFileName,
 		Hash:     hash,
-		Src:      fp,
+		Src:      hfp,
 		Type:     r.FormValue("type"),
 		Size:     nbBytes,
 		UserID:   e,
