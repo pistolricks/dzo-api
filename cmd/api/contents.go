@@ -67,7 +67,6 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 	}(dst)
 
 	nbBytes, _ := io.Copy(dst, file)
-
 	fp := filepath.Join(pathway, filename)
 	hash := extended.HashImage(fp)
 
