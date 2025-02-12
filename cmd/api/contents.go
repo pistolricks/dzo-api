@@ -138,12 +138,13 @@ func (app *application) listContentsHandler(w http.ResponseWriter, r *http.Reque
 
 	input.Original = app.readString(qs, "original", "")
 	input.Type = app.readString(qs, "type", "")
-
+	input.Hash = app.readString(qs, "hash", "")
+	input.Folder = app.readString(qs, "folder", "")
 	input.Filters.Page = app.readInt(qs, "page", 1, v)
 	input.Filters.PageSize = app.readInt(qs, "page_size", 20, v)
 
 	input.Filters.Sort = app.readString(qs, "sort", "id")
-	input.Filters.SortSafelist = []string{"id", "original", "type", "-id", "-original", "-type"}
+	input.Filters.SortSafelist = []string{"id", "original", "type", "folder", "-id", "-original", "-type", "-folder"}
 
 	if extended.ValidateFilters(v, input.Filters); !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)

@@ -123,14 +123,16 @@ func (m ContentModel) GetAll(hash string, name string, original string, src stri
 	query := fmt.Sprintf(`
 	SELECT count(*) OVER(), id, hash, name, original, src, type, size, folder, user_id
 	FROM contents
+	
 	WHERE (to_tsvector('simple', name) @@ plainto_tsquery('simple', $1) OR $1 = '')
+	AND (to_tsvector('simple', folder) @@ plainto_tsquery('simple', $2) OR $2 = '')
 	ORDER BY %s %s, id ASC
-	LIMIT $2 OFFSET $3`, filters.sortColumn(), filters.sortDirection())
+	LIMIT $3 OFFSET $4`, filters.sortColumn(), filters.sortDirection())
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	args := []any{name, filters.limit(), filters.offset()}
+	args := []any{name, folder, filters.limit(), filters.offset()}
 	rows, err := m.DB.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, Metadata{}, err
