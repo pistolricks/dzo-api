@@ -111,7 +111,8 @@ func (app *application) createFile(w http.ResponseWriter, r *http.Request, path 
 	}
 
 	// Build the file path and create it
-	dst, err := os.Create(filepath.Join(path, filename))
+	f := filepath.Join(path, filename)
+	dst, err := os.Create(f)
 	if err != nil {
 		return nil, err
 	}
