@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/pistolricks/go-api-template/internal/extended"
 	"github.com/pistolricks/validation"
-	"github.com/speps/go-hashids/v2"
+
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -38,16 +38,9 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 	fmt.Println("Past readJSON")
 	user := app.contextGetUser(r)
 
-	hd := hashids.NewData()
-	hd.Salt = "tofu and ramen"
-	hd.MinLength = 10
-	h, _ := hashids.NewWithData(hd)
-	e, _ := h.Encode([]int{int(user.ID)})
-	fmt.Println(e)
-	d, _ := h.DecodeWithError(e)
-	fmt.Println(d)
+	id := app.handleEncodeHashids(user.ID, "Ollivr-Contents")
 
-	pathway := filepath.Join("ui/static", e)
+	pathway := filepath.Join("ui/static", id)
 	fileExt := filepath.Ext(handler.Filename)
 	originalFileName := strings.TrimSuffix(filepath.Base(handler.Filename), filepath.Ext(handler.Filename))
 	now := time.Now()
@@ -85,7 +78,7 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 		Src:      hfp,
 		Type:     r.FormValue("type"),
 		Size:     nbBytes,
-		UserID:   e,
+		UserID:   id,
 	}
 
 	v := validation.New()
@@ -101,7 +94,7 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"userId": e, "path": fp, "type": r.FormValue("type"), "size": nbBytes, "hash": hash}, nil)
+	err = app.writeJSON(w, http.StatusCreated, envelope{"userId": id, "path": fp, "type": r.FormValue("type"), "size": nbBytes, "hash": hash}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

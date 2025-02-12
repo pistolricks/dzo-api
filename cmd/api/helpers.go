@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"github.com/pistolricks/validation"
+	"github.com/speps/go-hashids/v2"
 	"io"
 	"log"
 	"net/http"
@@ -182,4 +183,23 @@ func (app *application) handleRenameFile(o string, n string) error {
 		log.Fatal(e)
 	}
 	return nil
+}
+
+func (app *application) handleEncodeHashids(id int64, salt string) string {
+	hd := hashids.NewData()
+	hd.Salt = salt
+	hd.MinLength = 10
+	h, _ := hashids.NewWithData(hd)
+	e, _ := h.Encode([]int{int(id)})
+	return e
+}
+
+func (app *application) handleDecodeHashids(id string, salt string) int64 {
+	hd := hashids.NewData()
+	hd.Salt = salt
+	hd.MinLength = 10
+	h, _ := hashids.NewWithData(hd)
+	d, _ := h.DecodeWithError(id)
+
+	return int64(d[0])
 }

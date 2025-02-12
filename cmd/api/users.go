@@ -224,10 +224,74 @@ func (app *application) updateUserPasswordHandler(w http.ResponseWriter, r *http
 }
 
 func (app *application) userLogoutHandler(w http.ResponseWriter, r *http.Request) {
-	r = app.contextSetUser(r, models.AnonymousUser)
 
-	err := app.writeJSON(w, http.StatusOK, envelope{"user": models.AnonymousUser}, nil)
+	var input struct {
+		Email string `json:"email"`
+	}
+
+	err := app.readJSON(w, r, &input)
 	if err != nil {
-		app.serverErrorResponse(w, r, err)
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	user := app.contextGetUser(r)
+	if user.IsAnonymous() {
+		app.authenticationRequiredResponse(w, r)
+		return
+	}
+
+	if user.Email == input.Email {
+		r = app.contextSetUser(r, models.AnonymousUser)
+	}
+
+	er := app.writeJSON(w, http.StatusOK, envelope{"user": models.AnonymousUser}, nil)
+	if er != nil {
+		app.serverErrorResponse(w, r, er)
+	}
+}
+
+func (app *application) showUserHandler(w http.ResponseWriter, r *http.Request) {
+	var input struct {
+		Email          string `json:"email"`
+		TokenPlaintext string `json:"token"`
+	}
+
+	err := app.readJSON(w, r, &input)
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	v := validation.New()
+
+	models.ValidateEmail(v, input.Email)
+	models.ValidateTokenPlaintext(v, input.TokenPlaintext)
+
+	if !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	user, err := app.models.Users.GetForToken(models.ScopeAuthentication, input.TokenPlaintext)
+	if err != nil {
+		switch {
+		case errors.Is(err, models.ErrRecordNotFound):
+			v.AddError("token", "invalid or expired password reset token")
+			app.failedValidationResponse(w, r, v.Errors)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
+		return
+	}
+
+	if user.Email == input.Email {
+		err = app.writeJSON(w, http.StatusOK, envelope{"user": user}, nil)
+		if err != nil {
+			app.serverErrorResponse(w, r, err)
+		}
+	} else {
+		v.AddError("token", "invalid or expired password reset token")
+		app.failedValidationResponse(w, r, v.Errors)
 	}
 }

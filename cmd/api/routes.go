@@ -33,6 +33,8 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodGet, "/v1/contents", app.requirePermission("vendors:write", app.listContentsHandler))
 	router.HandlerFunc(http.MethodPost, "/v1/upload/image", app.requirePermission("vendors:write", app.uploadImageHandler))
 
+	router.HandlerFunc(http.MethodPost, "/v1/users/find", app.requirePermission("vendors:read", app.showUserHandler))
+
 	router.HandlerFunc(http.MethodGet, "/v1/users/activate", app.showActivateUserHandler)
 	router.HandlerFunc(http.MethodPut, "/v1/users/activated", app.activateUserHandler)
 
