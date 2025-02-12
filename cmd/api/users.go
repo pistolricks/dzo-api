@@ -225,29 +225,14 @@ func (app *application) updateUserPasswordHandler(w http.ResponseWriter, r *http
 
 func (app *application) userLogoutHandler(w http.ResponseWriter, r *http.Request) {
 
-	var input struct {
-		Email string `json:"email"`
+	user := app.contextClearUser(r)
+	if user == nil {
+
 	}
 
-	err := app.readJSON(w, r, &input)
+	err := app.writeJSON(w, http.StatusOK, envelope{"user": nil}, nil)
 	if err != nil {
-		app.badRequestResponse(w, r, err)
-		return
-	}
-
-	user := app.contextGetUser(r)
-	if user.IsAnonymous() {
-		app.authenticationRequiredResponse(w, r)
-		return
-	}
-
-	if user.Email == input.Email {
-		r = app.contextSetUser(r, models.AnonymousUser)
-	}
-
-	er := app.writeJSON(w, http.StatusOK, envelope{"user": models.AnonymousUser}, nil)
-	if er != nil {
-		app.serverErrorResponse(w, r, er)
+		app.errorResponse(w, r, http.StatusUnprocessableEntity, err)
 	}
 }
 

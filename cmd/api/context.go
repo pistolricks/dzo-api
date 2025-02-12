@@ -22,3 +22,8 @@ func (app *application) contextGetUser(r *http.Request) *models.User {
 	}
 	return user
 }
+
+func (app *application) contextClearUser(r *http.Request) *http.Request {
+	ctx := context.WithValue(r.Context(), userContextKey, nil)
+	return r.WithContext(ctx)
+}
