@@ -27,7 +27,8 @@ type Content struct {
 	Src       string     `json:"src"`
 	Type      string     `json:"type,omitempty"`
 	Size      int64      `json:"size,omitempty"`
-	UserID    string     `json:"user_id"`
+	Folder    string     `json:"folder,omitempty"`
+	UserID    int64      `json:"user_id"`
 }
 
 func ValidateContent(v *validation.Validator, content *Content) {
@@ -52,11 +53,11 @@ func (m ContentModel) Insert(content *Content) error {
 	content.Src = strings.ReplaceAll(content.Src, "ui/static", "static")
 
 	query := `
-	INSERT INTO contents (name,original,hash,src,type,size,user_id)
-	VALUES ($1, $2, $3, $4, $5, $6, $7)
+	INSERT INTO contents (name,original,hash,src,type,size,folder,user_id)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	RETURNING id, created_at, name;
 	`
-	args := []any{content.Name, content.Original, content.Hash, content.Src, content.Type, content.Size, content.UserID}
+	args := []any{content.Name, content.Original, content.Hash, content.Src, content.Type, content.Size, content.Folder, content.UserID}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
@@ -75,7 +76,7 @@ func (m ContentModel) Insert(content *Content) error {
 
 func (m ContentModel) GetByHash(hash string) (*Content, error) {
 	query := `
-	SELECT id,created_at,name,original,hash,src,type,size,user_id
+	SELECT id,created_at,name,original,hash,src,type,size,folder,user_id
 	FROM contents
 	WHERE hash = $1`
 	var content Content
@@ -92,6 +93,7 @@ func (m ContentModel) GetByHash(hash string) (*Content, error) {
 		&content.Src,
 		&content.Type,
 		&content.Size,
+		&content.Folder,
 		&content.UserID,
 	)
 
@@ -116,10 +118,10 @@ func (m ContentModel) DecodeWebP(content *Content) error {
 	return nil
 }
 
-func (m ContentModel) GetAll(hash string, name string, original string, src string, mimeType string, size int64, userId string, filters Filters) ([]*Content, Metadata, error) {
+func (m ContentModel) GetAll(hash string, name string, original string, src string, mimeType string, size int64, folder string, userId int64, filters Filters) ([]*Content, Metadata, error) {
 
 	query := fmt.Sprintf(`
-	SELECT count(*) OVER(), id, hash, name, original, src, type, size, user_id
+	SELECT count(*) OVER(), id, hash, name, original, src, type, size, folder, user_id
 	FROM contents
 	WHERE (to_tsvector('simple', name) @@ plainto_tsquery('simple', $1) OR $1 = '')
 	ORDER BY %s %s, id ASC
@@ -155,6 +157,7 @@ func (m ContentModel) GetAll(hash string, name string, original string, src stri
 			&content.Src,
 			&content.Type,
 			&content.Size,
+			&content.Folder,
 			&content.UserID,
 		)
 		if err != nil {

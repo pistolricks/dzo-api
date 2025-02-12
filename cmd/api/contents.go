@@ -38,9 +38,9 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 	fmt.Println("Past readJSON")
 	user := app.contextGetUser(r)
 
-	id := app.handleEncodeHashids(user.ID, "Ollivr-Contents")
+	folder := app.handleEncodeHashids(user.ID, "Ollivr")
 
-	pathway := filepath.Join("ui/static", id)
+	pathway := filepath.Join("ui/static", folder)
 	fileExt := filepath.Ext(handler.Filename)
 	originalFileName := strings.TrimSuffix(filepath.Base(handler.Filename), filepath.Ext(handler.Filename))
 	now := time.Now()
@@ -78,7 +78,8 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 		Src:      hfp,
 		Type:     r.FormValue("type"),
 		Size:     nbBytes,
-		UserID:   id,
+		Folder:   folder,
+		UserID:   user.ID,
 	}
 
 	v := validation.New()
@@ -94,7 +95,7 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"userId": id, "path": fp, "type": r.FormValue("type"), "size": nbBytes, "hash": hash}, nil)
+	err = app.writeJSON(w, http.StatusCreated, envelope{"userId": user.ID, "folder": folder, "path": fp, "type": r.FormValue("type"), "size": nbBytes, "hash": hash}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
@@ -126,7 +127,8 @@ func (app *application) listContentsHandler(w http.ResponseWriter, r *http.Reque
 		Src      string
 		Type     string
 		Size     int64
-		UserID   string
+		Folder   string
+		UserID   int64
 		extended.Filters
 	}
 
@@ -148,7 +150,7 @@ func (app *application) listContentsHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	contents, metadata, err := app.extended.Contents.GetAll(input.Hash, input.Name, input.Original, input.Src, input.Type, input.Size, input.UserID, input.Filters)
+	contents, metadata, err := app.extended.Contents.GetAll(input.Hash, input.Name, input.Original, input.Src, input.Type, input.Size, input.Folder, input.UserID, input.Filters)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return
