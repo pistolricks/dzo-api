@@ -28,6 +28,8 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodDelete, "/v1/vendors/:id", app.requirePermission("vendors:write", app.deleteVendorHandler))
 
 	router.HandlerFunc(http.MethodGet, "/v1/addresses/create", app.requirePermission("vendors:write", app.showAddressForm))
+	router.HandlerFunc(http.MethodPost, "/v1/addresses/search", app.requirePermission("vendors:write", app.addressSearchHandler))
+	router.HandlerFunc(http.MethodPost, "/v1/addresses/details", app.requirePermission("vendors:write", app.addressDetailsHandler))
 	router.HandlerFunc(http.MethodPost, "/v1/addresses", app.requirePermission("vendors:write", app.createAddressHandler))
 
 	router.HandlerFunc(http.MethodGet, "/v1/contents", app.requirePermission("vendors:write", app.listContentsHandler))

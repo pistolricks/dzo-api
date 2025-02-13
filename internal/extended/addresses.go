@@ -3,26 +3,14 @@ package extended
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/Boostport/address"
 	"github.com/indrasaputra/hashids"
 	"github.com/lib/pq"
 	"github.com/muesli/gominatim"
+	"github.com/turistikrota/osm"
 	"time"
 )
-
-type formatData struct {
-	Country                     string
-	CountryEnglish              string
-	Name                        string
-	Organization                string
-	StreetAddress               []string
-	DependentLocality           string
-	Locality                    string
-	AdministrativeArea          string
-	AdministrativeAreaPostalKey string
-	PostCode                    string
-	SortingCode                 string
-}
 
 type Address struct {
 	ID                 hashids.ID             `json:"id"`
@@ -59,15 +47,27 @@ func ValidateAddress(a *Address) (address.Address, error) {
 	return addr, err
 }
 
-func SearchOsm(s string) ([]gominatim.SearchResult, error) {
-	gominatim.SetServer("https://nominatim.openstreetmap.org/")
-
-	qry := gominatim.SearchQuery{
-		Q: s,
+func SearchOsm(s string) ([]osm.SearchResult, error) {
+	ctx := context.Background()
+	results, err := osm.Search(ctx, s)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return nil, nil
 	}
-	resp, qer := qry.Get() // Returns []gominatim.SearchResult
+	for _, result := range results {
+		fmt.Println("Search Result:", result)
+	}
 
-	return resp, qer
+	return results, err
+}
+
+func GetDetailsWithPlaceId(id int) (*osm.DetailsResult, error) {
+	ctx := context.Background()
+	result, err := osm.DetailsWithPlaceID(ctx, id) // PlaceID for the Empire State Building
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+	return result, err
 }
 
 func GetAddressOSM(a address.Address) ([]gominatim.SearchResult, error) {

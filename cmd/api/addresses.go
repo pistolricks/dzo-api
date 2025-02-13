@@ -15,6 +15,26 @@ type XYZData struct {
 	Tags []string `json:"tags"`
 }
 
+func (app *application) addressDetailsHandler(w http.ResponseWriter, r *http.Request) {
+	headers := make(http.Header)
+
+	var input struct {
+		PlaceID int `json:"place_id"`
+	}
+
+	err := app.readJSON(w, r, &input)
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	res, errors := extended.GetDetailsWithPlaceId(input.PlaceID)
+	err = app.writeJSON(w, http.StatusCreated, envelope{"query": input, "results": res, "errors": errors}, headers)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+
+}
 func (app *application) addressSearchHandler(w http.ResponseWriter, r *http.Request) {
 	headers := make(http.Header)
 
@@ -29,6 +49,11 @@ func (app *application) addressSearchHandler(w http.ResponseWriter, r *http.Requ
 	}
 
 	res, errors := extended.SearchOsm(input.Search)
+	/*
+		for key, value := range res {
+
+		}
+	*/
 
 	err = app.writeJSON(w, http.StatusCreated, envelope{"query": input.Search, "results": res, "errors": errors}, headers)
 	if err != nil {
