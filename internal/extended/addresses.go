@@ -59,6 +59,17 @@ func ValidateAddress(a *Address) (address.Address, error) {
 	return addr, err
 }
 
+func SearchOsm(s string) ([]gominatim.SearchResult, error) {
+	gominatim.SetServer("https://nominatim.openstreetmap.org/")
+
+	qry := gominatim.SearchQuery{
+		Q: s,
+	}
+	resp, qer := qry.Get() // Returns []gominatim.SearchResult
+
+	return resp, qer
+}
+
 func GetAddressOSM(a address.Address) ([]gominatim.SearchResult, error) {
 	gominatim.SetServer("https://nominatim.openstreetmap.org/")
 

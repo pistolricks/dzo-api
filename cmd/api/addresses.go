@@ -2,7 +2,6 @@ package main
 
 import (
 	address2 "github.com/Boostport/address"
-	geojson "github.com/paulmach/go.geojson"
 	"github.com/pistolricks/go-api-template/internal/extended"
 	"net/http"
 )
@@ -16,12 +15,25 @@ type XYZData struct {
 	Tags []string `json:"tags"`
 }
 
-func NewGeoJSON(position Position, tags []string) ([]byte, error) {
-	featureCollection := geojson.NewFeatureCollection()
-	feature := geojson.NewPointFeature([]float64{position.Longitude, position.Latitude})
-	feature.SetProperty("@ns:com:here:xyz", XYZData{Tags: tags})
-	featureCollection.AddFeature(feature)
-	return featureCollection.MarshalJSON()
+func (app *application) addressSearchHandler(w http.ResponseWriter, r *http.Request) {
+	headers := make(http.Header)
+
+	var input struct {
+		Search string `json:"search"`
+	}
+
+	err := app.readJSON(w, r, &input)
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	res, errors := extended.SearchOsm(input.Search)
+
+	err = app.writeJSON(w, http.StatusCreated, envelope{"query": input.Search, "results": res, "errors": errors}, headers)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
 }
 
 func (app *application) createAddressHandler(w http.ResponseWriter, r *http.Request) {
@@ -49,11 +61,11 @@ func (app *application) createAddressHandler(w http.ResponseWriter, r *http.Requ
 		Country:            input.Country,
 	}
 
-	address, error := extended.ValidateAddress(addr)
+	address, ev := extended.ValidateAddress(addr)
 
 	co, coerr := extended.GetAddressOSM(address)
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"address": address, "osm": co, "c-errors": coerr, "errors": error}, headers)
+	err = app.writeJSON(w, http.StatusCreated, envelope{"address": address, "results": co, "results-errors": coerr, "errors": ev}, headers)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

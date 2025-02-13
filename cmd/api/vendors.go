@@ -6,6 +6,7 @@ import (
 	"github.com/pistolricks/go-api-template/internal/extended"
 	"github.com/pistolricks/validation"
 	"net/http"
+	"strconv"
 )
 
 func (app *application) createVendorHandler(w http.ResponseWriter, r *http.Request) {
@@ -69,7 +70,11 @@ func (app *application) showVendorHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusOK, envelope{"vendor": vendor}, nil)
+	pos := Position{33.983841, -118.451424}
+
+	err = app.writeGeoJSON(w, http.StatusOK, envelope{"vendor": vendor}, nil, strconv.FormatInt(vendor.ID, 10), pos)
+
+	// err = app.writeJSON(w, http.StatusOK, envelope{"vendor": vendor}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
