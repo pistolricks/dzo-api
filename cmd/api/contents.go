@@ -37,7 +37,6 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 
 	fmt.Println("Past readJSON")
 	user := app.contextGetUser(r)
-
 	folder := app.handleEncodeHashids(user.ID, "Ollivr")
 
 	pathway := filepath.Join("ui/static", folder)
