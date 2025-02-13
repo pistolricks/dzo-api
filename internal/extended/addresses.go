@@ -70,6 +70,15 @@ func GetDetailsWithPlaceId(id int) (*osm.DetailsResult, error) {
 	return result, err
 }
 
+func GetDetailsWithCoordinates(lat float64, long float64) (*osm.ReverseResult, error) {
+	ctx := context.Background()
+	result, err := osm.Reverse(ctx, lat, long) // Latitude and Longitude for the Empire State Building
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+	return result, err
+}
+
 func GetAddressOSM(a address.Address) ([]gominatim.SearchResult, error) {
 	gominatim.SetServer("https://nominatim.openstreetmap.org/")
 

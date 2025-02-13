@@ -4,6 +4,7 @@ import (
 	address2 "github.com/Boostport/address"
 	"github.com/pistolricks/go-api-template/internal/extended"
 	"net/http"
+	"strconv"
 )
 
 type Position struct {
@@ -29,12 +30,41 @@ func (app *application) addressDetailsHandler(w http.ResponseWriter, r *http.Req
 	}
 
 	res, errors := extended.GetDetailsWithPlaceId(input.PlaceID)
+
 	err = app.writeJSON(w, http.StatusCreated, envelope{"query": input, "results": res, "errors": errors}, headers)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
 
 }
+
+func (app *application) addressDetailsByCoordinates(w http.ResponseWriter, r *http.Request) {
+
+	headers := make(http.Header)
+
+	var input struct {
+		Lat string `json:"lat"`
+		Lon string `json:"lon"`
+	}
+
+	err := app.readJSON(w, r, &input)
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	lat64, err := strconv.ParseFloat(input.Lat, 64)
+	lon64, err := strconv.ParseFloat(input.Lon, 64)
+
+	res, err := extended.GetDetailsWithCoordinates(lat64, lon64)
+
+	err = app.writeJSON(w, http.StatusCreated, envelope{"query": input, "results": res, "errors": err}, headers)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+
+}
+
 func (app *application) addressSearchHandler(w http.ResponseWriter, r *http.Request) {
 	headers := make(http.Header)
 
