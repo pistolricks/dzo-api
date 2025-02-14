@@ -7,8 +7,7 @@ import (
 	"github.com/Boostport/address"
 	"github.com/indrasaputra/hashids"
 	"github.com/lib/pq"
-	"github.com/muesli/gominatim"
-	"github.com/turistikrota/osm"
+	"github.com/pistolricks/go-api-template/internal/api/osm"
 	"time"
 )
 
@@ -79,21 +78,15 @@ func GetDetailsWithCoordinates(lat float64, long float64) (*osm.ReverseResult, e
 	return result, err
 }
 
-func GetAddressOSM(a address.Address) ([]gominatim.SearchResult, error) {
-	gominatim.SetServer("https://nominatim.openstreetmap.org/")
+func GetAddressOSM() ([]osm.LookupResult, error) {
+	ctx := context.Background()
+	result, err := osm.Lookup(ctx, "way", 123456789) // Example OSM type and ID
+	if err != nil {
+		fmt.Println("Error:", err)
 
-	//Get by a Querystring
-
-	//Get by City
-	qry := gominatim.SearchQuery{
-		Q:          a.StreetAddress[0],
-		City:       a.Locality,
-		State:      a.AdministrativeArea,
-		Postalcode: a.PostCode,
 	}
-	resp, qer := qry.Get() // Returns []gominatim.SearchResult
-
-	return resp, qer
+	fmt.Println("Lookup Result:", result)
+	return result, err
 }
 
 type AddressModel struct {

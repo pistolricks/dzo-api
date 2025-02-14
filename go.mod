@@ -8,14 +8,12 @@ require (
 	github.com/indrasaputra/hashids v0.2.0
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/lib/pq v1.10.9
-	github.com/muesli/gominatim v0.1.0
 	github.com/paulmach/go.geojson v1.5.0
 	github.com/pistolricks/mailer v0.1.0
-	github.com/pistolricks/models v0.1.1
+	github.com/pistolricks/models v0.1.3
 	github.com/pistolricks/validation v0.1.0
 	github.com/speps/go-hashids/v2 v2.0.1
 	github.com/tomasen/realip v0.0.0-20180522021738-f0c99a92ddce
-	github.com/turistikrota/osm v0.0.5
 	golang.org/x/time v0.9.0
 )
 

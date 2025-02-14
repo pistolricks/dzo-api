@@ -107,20 +107,20 @@ func (app *application) createAddressHandler(w http.ResponseWriter, r *http.Requ
 		app.badRequestResponse(w, r, err)
 		return
 	}
+	/*
+		addr := &extended.Address{
+			StreetAddress:      input.StreetAddress,
+			Locality:           input.Locality,
+			AdministrativeArea: input.AdministrativeArea,
+			PostCode:           input.PostCode,
+			Country:            input.Country,
+		}
 
-	addr := &extended.Address{
-		StreetAddress:      input.StreetAddress,
-		Locality:           input.Locality,
-		AdministrativeArea: input.AdministrativeArea,
-		PostCode:           input.PostCode,
-		Country:            input.Country,
-	}
+		 address, ev := extended.ValidateAddress(addr)
+	*/
+	res, errors := extended.GetAddressOSM()
 
-	address, ev := extended.ValidateAddress(addr)
-
-	co, coerr := extended.GetAddressOSM(address)
-
-	err = app.writeJSON(w, http.StatusCreated, envelope{"address": address, "results": co, "results-errors": coerr, "errors": ev}, headers)
+	err = app.writeJSON(w, http.StatusCreated, envelope{"results": res, "errors": errors}, headers)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

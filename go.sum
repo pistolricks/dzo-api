@@ -34,6 +34,8 @@ github.com/pistolricks/mailer v0.1.0 h1:88XlpmkQWUKvA2VDtLc037fOLv/gIJHY4QU2R/js
 github.com/pistolricks/mailer v0.1.0/go.mod h1:pOI6fq8+85WCQWajZsGVomCeZHIje0gOx5VIFrPz4wA=
 github.com/pistolricks/models v0.1.1 h1:y6R0qD9Frao7ygKCGnOv50W8yMX8zKi3HZUvdaZdUho=
 github.com/pistolricks/models v0.1.1/go.mod h1:GjZudAh4X4qwuebLbN76w0rxFQNVLYd883FaEOpPedQ=
+github.com/pistolricks/models v0.1.3 h1:HU/8glTTdDR2b8GvG0APLudtzfPV3Te/puuzkoKZNDs=
+github.com/pistolricks/models v0.1.3/go.mod h1:YqEkRD3rzrFIoVxp3Yvuh512X24FPjTqT1wDgm4OVYs=
 github.com/pistolricks/validation v0.1.0 h1:KRZYPpoaL4Zgo/pTwM0VaN8cR9dY1BI9q7KIvgHgyIo=
 github.com/pistolricks/validation v0.1.0/go.mod h1:ss7NrMOabrIrwpCV0Mk7ncb0arMlU9RzPTY1xi2zk+k=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
