@@ -51,6 +51,7 @@ func Search(ctx context.Context, q string, opts ...optFunc) ([]SearchResult, err
 	urlVals.Set("format", "json")
 	urlVals.Set("addressdetails", "1")
 	urlVals.Set("extratags", "1")
+	urlVals.Set("polygon_svg", "1")
 	urlVals.Set("q", q)
 	res, err := runRequest[[]SearchResult](ctx, apiUrl+"search?"+urlVals.Encode(), opts...)
 	if err != nil {
