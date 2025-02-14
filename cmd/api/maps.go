@@ -37,16 +37,18 @@ func (app *application) positionMapHandler(w http.ResponseWriter, r *http.Reques
 		Lat:      lat64,
 		Lng:      lng64,
 	}
-
-	app.background(func() {
-		extended.PositionMap(geo)
-	})
-
+	/*
+		app.background(func() {
+			extended.PositionMap(geo)
+		})
+	*/
 	user := app.contextGetUser(r)
 	folder := app.handleEncodeHashids(user.ID, "Ollivr")
 
 	pathway := filepath.Join("ui/static", folder)
-	var filename = filepath.Base(geo.Filename)
+
+	// var filename = filepath.Base(geo.Filename)
+	var filename = geo.Filename
 	ctx := sm.NewContext()
 	ctx.SetSize(600, 400)
 	ctx.SetZoom(14)
