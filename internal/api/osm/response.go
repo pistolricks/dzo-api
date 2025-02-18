@@ -72,6 +72,7 @@ type SearchResult struct {
 	Address     map[string]any `json:"address"`
 	Extratags   map[string]any `json:"extratags"`
 	Boundingbox []string       `json:"boundingbox"`
+	Geometry    map[string]any `json:"geometry"`
 	Class       string         `json:"class"`
 	DisplayName string         `json:"display_name"`
 	Importance  float64        `json:"importance"`
