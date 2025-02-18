@@ -59,7 +59,10 @@ func (app *application) addressDetailsByCoordinates(w http.ResponseWriter, r *ht
 
 	res, err := extended.GetDetailsWithCoordinates(lat64, lon64)
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"query": input, "results": res, "errors": err}, headers)
+	pos := Position{lat64, lon64}
+	geo := app.fillGeoJSON(strconv.FormatInt(int64(res.OsmID), 10), "loc", pos, envelope{"place_id": strconv.FormatInt(int64(res.PlaceID), 10), "type": res.Type, "osm_type": res.OsmType, "display": res.DisplayName, "extratags": res.Extratags, "importance": res.Importance, "address": res.Address, "boundingbox": res.Boundingbox, "viewbox": ""})
+
+	err = app.writeJSON(w, http.StatusCreated, envelope{"query": input, "results": geo, "errors": err}, headers)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
@@ -70,7 +73,8 @@ func (app *application) addressSearchHandler(w http.ResponseWriter, r *http.Requ
 	headers := make(http.Header)
 
 	var input struct {
-		Search string `json:"search"`
+		Search  string `json:"search"`
+		Viewbox string `json:"viewbox"`
 	}
 
 	err := app.readJSON(w, r, &input)
@@ -79,7 +83,7 @@ func (app *application) addressSearchHandler(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	res, errors := extended.SearchOsm(input.Search)
+	res, errors := extended.SearchOsm(input.Search, input.Viewbox)
 
 	featureCollection := geojson.NewFeatureCollection()
 

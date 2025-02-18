@@ -18,6 +18,7 @@ type ReverseResult struct {
 	Name        string         `json:"name"`         // Name is the name of the place.
 	DisplayName string         `json:"display_name"` // DisplayName is the human-readable name of the place.
 	Address     map[string]any `json:"address"`
+	Extratags   map[string]any `json:"extratags"`
 	Boundingbox []string       `json:"boundingbox"` // Boundingbox is the bounding box of the place.
 }
 

@@ -46,13 +46,14 @@ func DetailsWithPlaceID(ctx context.Context, placeID int, opts ...optFunc) (*Det
 // Search performs a search query to find places matching the given query string.
 // It takes a context, query string, and optional functions for additional configurations.
 // It returns a slice of SearchResult and an error if the request fails.
-func Search(ctx context.Context, q string, opts ...optFunc) ([]SearchResult, error) {
+func Search(ctx context.Context, q string, v string, opts ...optFunc) ([]SearchResult, error) {
 	urlVals := url.Values{}
 	urlVals.Set("format", "json")
 	urlVals.Set("addressdetails", "1")
 	urlVals.Set("extratags", "1")
 	urlVals.Set("polygon_svg", "1")
 	urlVals.Set("q", q)
+	urlVals.Set("viewbox", v)
 	res, err := runRequest[[]SearchResult](ctx, apiUrl+"search?"+urlVals.Encode(), opts...)
 	if err != nil {
 		return nil, err

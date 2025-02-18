@@ -46,9 +46,9 @@ func ValidateAddress(a *Address) (address.Address, error) {
 	return addr, err
 }
 
-func SearchOsm(s string) ([]osm.SearchResult, error) {
+func SearchOsm(s string, v string) ([]osm.SearchResult, error) {
 	ctx := context.Background()
-	results, err := osm.Search(ctx, s)
+	results, err := osm.Search(ctx, s, v)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return nil, nil
