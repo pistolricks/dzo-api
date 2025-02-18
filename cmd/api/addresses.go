@@ -2,6 +2,7 @@ package main
 
 import (
 	address2 "github.com/Boostport/address"
+	geojson "github.com/paulmach/go.geojson"
 	"github.com/pistolricks/go-api-template/internal/extended"
 	"net/http"
 	"strconv"
@@ -79,13 +80,22 @@ func (app *application) addressSearchHandler(w http.ResponseWriter, r *http.Requ
 	}
 
 	res, errors := extended.SearchOsm(input.Search)
-	/*
-		for key, value := range res {
 
-		}
-	*/
+	featureCollection := geojson.NewFeatureCollection()
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"query": input.Search, "results": res, "errors": errors}, headers)
+	for key := range res {
+
+		lat64, _ := strconv.ParseFloat(res[key].Lat, 64)
+		lon64, _ := strconv.ParseFloat(res[key].Lon, 64)
+
+		pos := Position{lat64, lon64}
+
+		geo := app.fillGeoJSON(strconv.FormatInt(int64(res[key].OsmID), 10), pos, envelope{"place_id": strconv.FormatInt(int64(res[key].PlaceID), 10), "type": res[key].Type, "osm_type": res[key].OsmType, "display": res[key].DisplayName, "importance": res[key].Importance, "address": res[key].Address, "extratags": res[key].Extratags, "boundingbox": res[key].Boundingbox, "svg": res[key].Svg})
+		featureCollection.AddFeature(geo)
+
+	}
+
+	err = app.writeJSON(w, http.StatusCreated, envelope{"query": input.Search, "results": featureCollection, "errors": errors}, headers)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

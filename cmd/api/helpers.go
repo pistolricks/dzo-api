@@ -58,6 +58,14 @@ func (app *application) fillGeoJSON(id string, position Position, data envelope)
 	return feature
 }
 
+func NewGeoJSON(position Position, data envelope, tags []string) ([]byte, error) {
+	featureCollection := geojson.NewFeatureCollection()
+	feature := geojson.NewPointFeature([]float64{position.Longitude, position.Latitude})
+	feature.SetProperty("@ns:com:here:xyz", XYZData{Tags: tags})
+	featureCollection.AddFeature(feature)
+	return featureCollection.MarshalJSON()
+}
+
 func (app *application) writeGeoJSON(w http.ResponseWriter, status int, data envelope, headers http.Header, id string, position Position) error {
 
 	feature := geojson.NewPointFeature([]float64{position.Longitude, position.Latitude})
