@@ -50,10 +50,10 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data envelo
 	return nil
 }
 
-func (app *application) fillGeoJSON(id string, position Position, data envelope) *geojson.Feature {
+func (app *application) fillGeoJSON(id string, jsonType string, position Position, data envelope) *geojson.Feature {
 
 	feature := geojson.NewPointFeature([]float64{position.Longitude, position.Latitude})
-	feature.SetProperty("type", data)
+	feature.SetProperty(jsonType, data)
 	feature.ID = id
 	return feature
 }

@@ -90,7 +90,7 @@ func (app *application) addressSearchHandler(w http.ResponseWriter, r *http.Requ
 
 		pos := Position{lat64, lon64}
 
-		geo := app.fillGeoJSON(strconv.FormatInt(int64(res[key].OsmID), 10), pos, envelope{"place_id": strconv.FormatInt(int64(res[key].PlaceID), 10), "type": res[key].Type, "osm_type": res[key].OsmType, "display": res[key].DisplayName, "importance": res[key].Importance, "address": res[key].Address, "extratags": res[key].Extratags, "boundingbox": res[key].Boundingbox, "svg": res[key].Svg})
+		geo := app.fillGeoJSON(strconv.FormatInt(int64(res[key].OsmID), 10), "loc", pos, envelope{"place_id": strconv.FormatInt(int64(res[key].PlaceID), 10), "type": res[key].Type, "osm_type": res[key].OsmType, "display": res[key].DisplayName, "importance": res[key].Importance, "address": res[key].Address, "extratags": res[key].Extratags, "boundingbox": res[key].Boundingbox, "svg": res[key].Svg})
 		featureCollection.AddFeature(geo)
 
 	}
