@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS addresses
 (
-    id bigserial PRIMARY KEY,
+    id text PRIMARY KEY,
     created_at timestamp(0) with time zone NOT NULL DEFAULT NOW(),
     country text NOT NULL,
     name text NOT NULL,

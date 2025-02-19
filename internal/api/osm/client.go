@@ -54,6 +54,7 @@ func Search(ctx context.Context, q string, v string, opts ...optFunc) ([]SearchR
 	urlVals.Set("polygon_svg", "1")
 	urlVals.Set("q", q)
 	urlVals.Set("viewbox", v)
+	urlVals.Set("dedupe", "1")
 	res, err := runRequest[[]SearchResult](ctx, apiUrl+"search?"+urlVals.Encode(), opts...)
 	if err != nil {
 		return nil, err
