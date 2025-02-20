@@ -1,0 +1,1 @@
+web: script/bootstrap.sh

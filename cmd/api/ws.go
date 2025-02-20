@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gobwas/ws"
 	"github.com/mailru/easygo/netpoll"
 	gopool "github.com/pistolricks/go-api-template/internal/pool"
@@ -15,7 +16,13 @@ import (
 func (app *application) websockets() error {
 
 	if x := app.config.ws.debug; x != "" {
-		app.logger.Info("starting pprof server on %s", x, "pprof server error: %v", http.ListenAndServe(x, nil))
+
+		m1 := fmt.Sprintf("starting pprof server on %s", x)
+		app.logger.Info(m1)
+		m2 := fmt.Sprintf("pprof server error: %v", http.ListenAndServe(x, nil))
+		go func() {
+			app.logger.Info(m2)
+		}()
 	}
 
 	// Initialize netpoll instance. We will use it to be noticed about incoming
@@ -45,17 +52,16 @@ func (app *application) websockets() error {
 		// Zero-copy upgrade to WebSocket connection.
 		hs, err := ws.Upgrade(safeConn)
 		if err != nil {
-
-			app.logger.Info("%s: upgrade error: %v", nameConn(conn), err)
-
+			m3 := fmt.Sprintf("%s: upgrade error: %v", nameConn(conn), err)
+			app.logger.Info(m3)
 			err := conn.Close()
 			if err != nil {
 				return
 			}
 			return
 		}
-		app.logger.Info("%s: established websocket connection: %+v", nameConn(conn), hs)
-
+		m4 := fmt.Sprintf("%s: established websocket connection: %+v", nameConn(conn), hs)
+		app.logger.Info(m4)
 		// Register incoming user in chat.
 		agent := message.Register(safeConn)
 
@@ -102,12 +108,12 @@ func (app *application) websockets() error {
 		}
 	}
 
-	// Create incoming connections listener.
 	ln, err := net.Listen("tcp", app.config.ws.addr)
 	if err != nil {
 		return err
 	}
-	app.logger.Info("websocket is listening on %s", ln.Addr().String())
+	m5 := fmt.Sprintf("websocket is listening on %s", ln.Addr().String())
+	app.logger.Info(m5)
 
 	// Create netpoll descriptor for the listener.
 	// We use OneShot here to manually resume events stream when we want to.
@@ -121,10 +127,7 @@ func (app *application) websockets() error {
 
 	// Subscribe to events about listener.
 	err = poller.Start(acceptDesc, func(e netpoll.Event) {
-		// We do not want to accept incoming connection when goroutine pool is
-		// busy. So if there are no free goroutines during 1ms we want to
-		// cooldown the server and do not receive connection for some short
-		// time.
+
 		err := pool.ScheduleTimeout(time.Millisecond, func() {
 			conn, err := ln.Accept()
 			if err != nil {

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -10,11 +9,11 @@ import (
 	"os"
 )
 
-func (app *application) proxy() {
-	flag.Parse()
+func (app *application) proxyServer() {
+
 	wd, err := os.Getwd()
 	if err != nil {
-		log.Fatalf("can not get os working directory: %v", err)
+		app.logger.Info("can not get os working directory: %v", err)
 	}
 
 	web := http.FileServer(http.Dir(wd + "/web"))
@@ -23,7 +22,8 @@ func (app *application) proxy() {
 	http.Handle("/web/", http.StripPrefix("/web/", web))
 	http.Handle("/ws", app.upstream("message", "tcp", app.config.proxy.messageAddr))
 
-	log.Printf("proxy is listening on %q", app.config.proxy.addr)
+	app.logger.Info("proxy is listening on %q", app.config.proxy.addr)
+	app.logger.Info("can not get os working directory: %v", err)
 	log.Fatal(http.ListenAndServe(app.config.proxy.addr, nil))
 }
 

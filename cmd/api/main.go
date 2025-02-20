@@ -11,7 +11,6 @@ import (
 	"github.com/pistolricks/go-api-template/internal/ws"
 	"github.com/pistolricks/mailer"
 	"github.com/pistolricks/models/cmd/models"
-
 	"log/slog"
 	"os"
 	"runtime"
@@ -94,15 +93,15 @@ func main() {
 	flag.StringVar(&cfg.smtp.password, "smtp-password", "", "SMTP password")
 	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "TEAM <no-reply@team.ollivr.com>", "SMTP sender")
 
-	flag.StringVar(&cfg.ws.addr, "ws-listen", ":3333", "WS address to bind to")
-	flag.StringVar(&cfg.ws.debug, "ws-pprof", "NA", "WS address for pprof http")
+	flag.StringVar(&cfg.ws.addr, "listen", ":3333", "WS address to bind to")
+	flag.StringVar(&cfg.ws.debug, "pprof", "", "WS address for pprof http")
 
-	flag.IntVar(&cfg.ws.workers, "ws-workers", 128, "WS max workers count")
-	flag.IntVar(&cfg.ws.queue, "ws-queue", 1, "WS workers task queue size")
-	flag.DurationVar(&cfg.db.maxIdleTime, "ws-io_timeout", 100*time.Millisecond, "WS i/o operations timeout")
+	flag.IntVar(&cfg.ws.workers, "workers", 128, "WS max workers count")
+	flag.IntVar(&cfg.ws.queue, "queue", 1, "WS workers task queue size")
+	flag.DurationVar(&cfg.ws.ioTimeout, "io_timeout", 100*time.Millisecond, "WS i/o operations timeout")
 
-	flag.StringVar(&cfg.proxy.addr, "proxy-addr", ":8888", "port to listen")
-	flag.StringVar(&cfg.proxy.messageAddr, "proxy-messageAddr", "localhost:3333", "message tcp addr to proxy pass")
+	flag.StringVar(&cfg.proxy.addr, "addr", ":8888", "port to listen")
+	flag.StringVar(&cfg.proxy.messageAddr, "messageAddr", "localhost:3333", "message tcp addr to proxy pass")
 
 	flag.Func("cors-trusted-origins", "Trusted CORS origins (space separated)", func(val string) error {
 		cfg.cors.trustedOrigins = strings.Fields(val)
