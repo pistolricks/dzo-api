@@ -8,6 +8,7 @@ import (
 	"fmt"
 	_ "github.com/lib/pq"
 	"github.com/pistolricks/go-api-template/internal/extended"
+	"github.com/pistolricks/go-api-template/internal/ws"
 	"github.com/pistolricks/mailer"
 	"github.com/pistolricks/models/cmd/models"
 
@@ -46,6 +47,17 @@ type config struct {
 		password string
 		sender   string
 	}
+	ws struct {
+		addr      string
+		debug     string
+		workers   int
+		queue     int
+		ioTimeout time.Duration
+	}
+	proxy struct {
+		addr        string
+		messageAddr string
+	}
 	cors struct {
 		trustedOrigins []string
 	}
@@ -58,6 +70,7 @@ type application struct {
 	extended extended.Extended
 	mailer   mailer.Mailer
 	wg       sync.WaitGroup
+	ws       ws.Ws
 }
 
 func main() {
@@ -80,6 +93,16 @@ func main() {
 	flag.StringVar(&cfg.smtp.username, "smtp-username", "", "SMTP username")
 	flag.StringVar(&cfg.smtp.password, "smtp-password", "", "SMTP password")
 	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "TEAM <no-reply@team.ollivr.com>", "SMTP sender")
+
+	flag.StringVar(&cfg.ws.addr, "ws-listen", ":3333", "WS address to bind to")
+	flag.StringVar(&cfg.ws.debug, "ws-pprof", "NA", "WS address for pprof http")
+
+	flag.IntVar(&cfg.ws.workers, "ws-workers", 128, "WS max workers count")
+	flag.IntVar(&cfg.ws.queue, "ws-queue", 1, "WS workers task queue size")
+	flag.DurationVar(&cfg.db.maxIdleTime, "ws-io_timeout", 100*time.Millisecond, "WS i/o operations timeout")
+
+	flag.StringVar(&cfg.proxy.addr, "proxy-addr", ":8888", "port to listen")
+	flag.StringVar(&cfg.proxy.messageAddr, "proxy-messageAddr", "localhost:3333", "message tcp addr to proxy pass")
 
 	flag.Func("cors-trusted-origins", "Trusted CORS origins (space separated)", func(val string) error {
 		cfg.cors.trustedOrigins = strings.Fields(val)
@@ -133,6 +156,7 @@ func main() {
 		logger:   logger,
 		models:   models.NewModels(db),
 		extended: extended.NewExtended(db),
+		ws:       ws.NewWs(db),
 		mailer:   mailer.New(cfg.smtp.host, cfg.smtp.port, cfg.smtp.username, cfg.smtp.password, cfg.smtp.sender),
 	}
 

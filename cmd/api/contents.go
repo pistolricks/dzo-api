@@ -65,9 +65,9 @@ func (app *application) uploadImageHandler(w http.ResponseWriter, r *http.Reques
 	hashedFileName := hash + fileExt
 	hfp := filepath.Join(pathway, hashedFileName)
 
-	herr := app.handleRenameFile(fp, hfp)
-	if herr != nil {
-		app.badRequestResponse(w, r, herr)
+	hrf := app.handleRenameFile(fp, hfp)
+	if hrf != nil {
+		app.badRequestResponse(w, r, hrf)
 	}
 
 	content := &extended.Content{

@@ -24,6 +24,12 @@ func (app *application) errorResponse(w http.ResponseWriter, r *http.Request, st
 	}
 }
 
+func (app *application) baseErrorResponse(w http.ResponseWriter, r *http.Request, status int, message any, err error) {
+	app.logError(r, err)
+
+	app.errorResponse(w, r, status, message)
+}
+
 func (app *application) duplicateErrorResponse(w http.ResponseWriter, r *http.Request, err error) {
 	app.logError(r, err)
 

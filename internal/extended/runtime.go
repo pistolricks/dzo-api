@@ -17,10 +17,6 @@ func (r *Runtime) UnmarshalJSON(jsonValue []byte) error {
 		return ErrInvalidRuntimeFormat
 	}
 
-	if err != nil {
-		return ErrInvalidRuntimeFormat
-	}
-
 	parts := strings.Split(unquotedJSONValue, " ")
 
 	if len(parts) != 2 || parts[1] != "mins" {
