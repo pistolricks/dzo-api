@@ -165,6 +165,7 @@ func main() {
 		logger.Error(err.Error())
 		os.Exit(1)
 	}
+
 }
 
 func openDB(cfg config) (*sql.DB, error) {

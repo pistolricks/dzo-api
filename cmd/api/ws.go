@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"github.com/gobwas/ws"
 	"github.com/mailru/easygo/netpoll"
 	gopool "github.com/pistolricks/go-api-template/internal/pool"
@@ -138,7 +139,7 @@ func (app *application) websockets() error {
 			err = <-accept
 		}
 		if err != nil {
-			if err != gopool.ErrScheduleTimeout {
+			if !errors.Is(err, gopool.ErrScheduleTimeout) {
 				goto cooldown
 			}
 			if ne, ok := err.(net.Error); ok && ne.Temporary() {
