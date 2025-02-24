@@ -13,17 +13,22 @@ func (app *application) proxyServer() {
 
 	wd, err := os.Getwd()
 	if err != nil {
-		app.logger.Info("can not get os working directory: %v", err)
+		m1 := fmt.Sprintf("can not get os working directory: %v", err)
+		app.logger.Info(m1)
 	}
 
 	web := http.FileServer(http.Dir(wd + "/web"))
 
 	http.Handle("/", web)
 	http.Handle("/web/", http.StripPrefix("/web/", web))
+
 	http.Handle("/ws", app.upstream("message", "tcp", app.config.proxy.messageAddr))
 
-	app.logger.Info("proxy is listening on %q", app.config.proxy.addr)
-	app.logger.Info("can not get os working directory: %v", err)
+	m2 := fmt.Sprintf("proxy is listening on %q", app.config.proxy.addr)
+	app.logger.Info(m2)
+
+	m3 := fmt.Sprintf("can not get os working directory: %v", err)
+	app.logger.Info(m3)
 	log.Fatal(http.ListenAndServe(app.config.proxy.addr, nil))
 }
 
