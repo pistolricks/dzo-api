@@ -1,14 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"io"
-	"log"
-	"net"
-	"net/http"
-	"os"
-)
-
+/*
 func (app *application) proxyServer() {
 
 	wd, err := os.Getwd()
@@ -111,17 +103,4 @@ func (app *application) upstream(name, network, addr string) http.Handler {
 		}()
 	})
 }
-
-func indexHandler(wd string) (http.Handler, error) {
-	index, err := os.Open(wd + "/web/index.html")
-	if err != nil {
-		return nil, err
-	}
-	stat, err := index.Stat()
-	if err != nil {
-		return nil, err
-	}
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeContent(w, r, "", stat.ModTime(), index)
-	}), nil
-}
+*/
