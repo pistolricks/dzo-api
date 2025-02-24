@@ -93,7 +93,7 @@ func main() {
 	flag.StringVar(&cfg.smtp.password, "smtp-password", "", "SMTP password")
 	flag.StringVar(&cfg.smtp.sender, "smtp-sender", "TEAM <no-reply@team.ollivr.com>", "SMTP sender")
 
-	flag.StringVar(&cfg.ws.addr, "listen", ":3333", "WS address to bind to")
+	flag.StringVar(&cfg.ws.addr, "listen", ":4000", "WS address to bind to")
 	flag.StringVar(&cfg.ws.debug, "pprof", "", "WS address for pprof http")
 
 	flag.IntVar(&cfg.ws.workers, "workers", 128, "WS max workers count")
@@ -101,7 +101,7 @@ func main() {
 	flag.DurationVar(&cfg.ws.ioTimeout, "io_timeout", 100*time.Millisecond, "WS i/o operations timeout")
 
 	flag.StringVar(&cfg.proxy.addr, "addr", ":8888", "port to listen")
-	flag.StringVar(&cfg.proxy.messageAddr, "messageAddr", "localhost:3333", "message tcp addr to proxy pass")
+	flag.StringVar(&cfg.proxy.messageAddr, "messageAddr", "localhost:4000", "message tcp addr to proxy pass")
 
 	flag.Func("cors-trusted-origins", "Trusted CORS origins (space separated)", func(val string) error {
 		cfg.cors.trustedOrigins = strings.Fields(val)
