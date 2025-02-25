@@ -35,11 +35,12 @@
 - Email address
 - Password
 - Phone or email verify
+- Facebook
+- Instagram
 
 - Do you own a business license?
 - What kind service do you provide?
 - Do you provide mobile services?
-- Are you a restaurant owner? NOT PUTTING THIS!
 
 ### User Profile
 
