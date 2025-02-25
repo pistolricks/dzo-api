@@ -17,7 +17,6 @@ func (app *application) routes() http.Handler {
 	router.ServeFiles("/static/*filepath", http.Dir("./ui/static"))
 
 	router.HandlerFunc(http.MethodGet, "/v1/healthcheck", app.healthcheckHandler)
-
 	router.HandlerFunc(http.MethodGet, "/v1/vendors", app.requirePermission("vendors:read", app.listVendorsHandler))
 	router.HandlerFunc(http.MethodPost, "/v1/vendors", app.requirePermission("vendors:write", app.createVendorHandler))
 	router.HandlerFunc(http.MethodGet, "/v1/vendors/:id", app.requirePermission("vendors:write", app.showVendorHandler))

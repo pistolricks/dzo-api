@@ -45,6 +45,7 @@
 ### User Profile
 
 - First and Last name
+- username
 - email
 - phone number (verify one time code)
 - allow one user for one phone number, and one email
