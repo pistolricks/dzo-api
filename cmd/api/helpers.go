@@ -10,6 +10,7 @@ import (
 	geojson "github.com/paulmach/go.geojson"
 	"github.com/pistolricks/validation"
 	"github.com/speps/go-hashids/v2"
+	"hash/fnv"
 	"io"
 	"log"
 	"net/http"
@@ -243,4 +244,10 @@ func (app *application) handleDecodeHashids(id string, salt string) int64 {
 	d, _ := h.DecodeWithError(id)
 
 	return int64(d[0])
+}
+
+func (app *application) handleHashString(text string) uint32 {
+	algorithm := fnv.New32a()
+	algorithm.Write([]byte(text))
+	return algorithm.Sum32()
 }
