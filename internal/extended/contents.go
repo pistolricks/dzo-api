@@ -126,13 +126,13 @@ func (m ContentModel) GetAll(hash string, name string, original string, src stri
 	
 	WHERE (to_tsvector('simple', name) @@ plainto_tsquery('simple', $1) OR $1 = '')
 	AND (to_tsvector('simple', folder) @@ plainto_tsquery('simple', $2) OR $2 = '')
-	ORDER BY id ASC, created_at ASC
+	ORDER BY %s %s, id ASC
 	LIMIT $3 OFFSET $4`, filters.sortColumn(), filters.sortDirection())
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	args := []any{hash, name, mimeType, folder, userId, filters.limit(), filters.offset()}
+	args := []any{name, folder, filters.limit(), filters.offset()}
 	rows, err := m.DB.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, Metadata{}, err
