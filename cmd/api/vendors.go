@@ -42,7 +42,12 @@ func (app *application) createVendorHandler(w http.ResponseWriter, r *http.Reque
 		app.serverErrorResponse(w, r, err)
 		return
 	}
-
+	user := app.contextGetUser(r)
+	err = app.extended.Vendors.AddForUser(user.ID, vendor.ID)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
 	headers := make(http.Header)
 	headers.Set("Location", fmt.Sprintf("/v1/vendors/%d", vendor.ID))
 
@@ -70,9 +75,20 @@ func (app *application) showVendorHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	uv, err := app.extended.Owners.GetVendorUserIds(id)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	user, err := app.extended.Users.GetUser(uv.UserID)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
 	pos := Position{33.983841, -118.451424}
 
-	err = app.writeGeoJSON(w, http.StatusOK, envelope{"vendor": vendor}, nil, strconv.FormatInt(vendor.ID, 10), pos)
+	err = app.writeGeoJSON(w, http.StatusOK, envelope{"vendor": vendor, "user": user}, nil, strconv.FormatInt(vendor.ID, 10), pos)
 
 	// err = app.writeJSON(w, http.StatusOK, envelope{"vendor": vendor}, nil)
 	if err != nil {

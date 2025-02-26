@@ -14,11 +14,11 @@ const (
 // Reverse performs a reverse geocoding request to convert latitude and longitude into a human-readable address.
 // It takes a context, latitude, longitude, and optional functions for additional configurations.
 // It returns a ReverseResult and an error if the request fails.
-func Reverse(ctx context.Context, lat float64, long float64, opts ...optFunc) (*ReverseResult, error) {
+func Reverse(ctx context.Context, lat float64, lon float64, opts ...optFunc) (*ReverseResult, error) {
 	urlVals := url.Values{}
 	urlVals.Set("format", "json")
 	urlVals.Set("lat", fmt.Sprintf("%f", lat))
-	urlVals.Set("lon", fmt.Sprintf("%f", long))
+	urlVals.Set("lon", fmt.Sprintf("%f", lon))
 	return runRequest[ReverseResult](ctx, apiUrl+"reverse?"+urlVals.Encode(), opts...)
 }
 

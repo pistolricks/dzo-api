@@ -15,6 +15,8 @@ type Extended struct {
 	Contents  ContentModel
 	Addresses AddressModel
 	Profiles  ProfileModel
+	Owners    OwnerModel
+	Users     UserModel
 }
 
 func NewExtended(db *sql.DB) Extended {
@@ -23,5 +25,7 @@ func NewExtended(db *sql.DB) Extended {
 		Contents:  ContentModel{DB: db},
 		Addresses: AddressModel{DB: db},
 		Profiles:  ProfileModel{DB: db},
+		Owners:    OwnerModel{DB: db},
+		Users:     UserModel{DB: db},
 	}
 }

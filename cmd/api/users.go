@@ -270,8 +270,18 @@ func (app *application) showUserHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	uv, err := app.extended.Owners.GetUserVendorIds(user.ID)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+	vendor, err := app.extended.Vendors.Get(uv.VendorID)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
 	if user.Email == input.Email {
-		err = app.writeJSON(w, http.StatusOK, envelope{"user": user}, nil)
+		err = app.writeJSON(w, http.StatusOK, envelope{"user": user, "vendor": vendor}, nil)
 		if err != nil {
 			app.serverErrorResponse(w, r, err)
 		}
