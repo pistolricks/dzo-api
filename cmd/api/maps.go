@@ -50,7 +50,7 @@ func (app *application) positionMapHandler(w http.ResponseWriter, r *http.Reques
 	// var filename = filepath.Base(geo.Filename)
 	var filename = geo.Filename
 	ctx := sm.NewContext()
-	ctx.SetSize(600, 400)
+	ctx.SetSize(1200, 1200)
 	ctx.SetZoom(14)
 
 	ctx.OverrideAttribution(geo.Title)
