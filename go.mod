@@ -23,6 +23,7 @@ require (
 )
 
 require (
+	github.com/HugoSmits86/nativewebp v1.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/disintegration/imaging v1.6.2 // indirect
 	github.com/flopp/go-coordsparser v0.0.0-20240403152942-4891dc40d0a7 // indirect

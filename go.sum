@@ -1,5 +1,7 @@
 github.com/Boostport/address v0.12.0 h1:zLlEkz9LbDMeeyz4em/nHgQJUvSmLnvOz42xqu/0QWU=
 github.com/Boostport/address v0.12.0/go.mod h1:IR3l3IU4xfPtwwRqzbhJwA6pEU9eoDWxJIw94fpUhxg=
+github.com/HugoSmits86/nativewebp v1.0.0 h1:WeZlyAb1gY5vebQ6CaPKPRDLEihNs5BeyZPmTPcrLtc=
+github.com/HugoSmits86/nativewebp v1.0.0/go.mod h1:YNQuWenlVmSUUASVNhTDwf4d7FwYQGbGhklC8p72Vr8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

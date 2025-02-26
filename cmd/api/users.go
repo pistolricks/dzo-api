@@ -291,24 +291,24 @@ func (app *application) showOwnerModels(w http.ResponseWriter, r *http.Request) 
 	uv, err := app.extended.Owners.GetUserVendorIds(id)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
+		return
 	}
 
 	vendor, err := app.extended.Vendors.Get(uv.VendorID)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
+		return
 	}
 
-	user := app.contextGetUser(r)
 	pos := Position{33.983841, -118.451424}
 
-	err = app.writeGeoJSON(w, http.StatusOK, envelope{"user": user, "vendor": vendor}, nil, strconv.FormatInt(id, 10), pos)
+	err = app.writeGeoJSON(w, http.StatusOK, envelope{"vendor": vendor}, nil, strconv.FormatInt(id, 10), pos)
 
 	if err != nil {
+
 		app.serverErrorResponse(w, r, err)
 	}
 
 	// err = app.writeJSON(w, http.StatusOK, envelope{"vendor": vendor}, nil)
-	if err != nil {
-		app.serverErrorResponse(w, r, err)
-	}
+
 }
