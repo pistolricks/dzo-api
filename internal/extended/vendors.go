@@ -209,7 +209,7 @@ func (m VendorModel) GetAll(title string, genres []string, filters Filters) ([]*
 	return vendors, metadata, nil
 }
 
-func (m VendorModel) AddForUser(userID int64, vendorID int64) error {
+func (m VendorModel) AddOwner(userID int64, vendorID int64) error {
 
 	query := `
 	INSERT INTO users_vendors (user_id, vendor_id)

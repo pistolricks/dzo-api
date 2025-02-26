@@ -5,6 +5,7 @@ import (
 	"github.com/pistolricks/models/cmd/models"
 	"github.com/pistolricks/validation"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -270,23 +271,44 @@ func (app *application) showUserHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	uv, err := app.extended.Owners.GetUserVendorIds(user.ID)
-	if err != nil {
-		app.serverErrorResponse(w, r, err)
-		return
-	}
-	vendor, err := app.extended.Vendors.Get(uv.VendorID)
-	if err != nil {
-		app.serverErrorResponse(w, r, err)
-		return
-	}
 	if user.Email == input.Email {
-		err = app.writeJSON(w, http.StatusOK, envelope{"user": user, "vendor": vendor}, nil)
+		err = app.writeJSON(w, http.StatusOK, envelope{"user": user}, nil)
 		if err != nil {
 			app.serverErrorResponse(w, r, err)
 		}
 	} else {
 		v.AddError("token", "invalid or expired password reset token")
 		app.failedValidationResponse(w, r, v.Errors)
+	}
+}
+
+func (app *application) showOwnerModels(w http.ResponseWriter, r *http.Request) {
+	id, err := app.readIDParam(r)
+	if err != nil {
+		app.notFoundResponse(w, r)
+		return
+	}
+	uv, err := app.extended.Owners.GetUserVendorIds(id)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+
+	vendor, err := app.extended.Vendors.Get(uv.VendorID)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+
+	user := app.contextGetUser(r)
+	pos := Position{33.983841, -118.451424}
+
+	err = app.writeGeoJSON(w, http.StatusOK, envelope{"user": user, "vendor": vendor}, nil, strconv.FormatInt(id, 10), pos)
+
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+
+	// err = app.writeJSON(w, http.StatusOK, envelope{"vendor": vendor}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
 	}
 }

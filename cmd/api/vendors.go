@@ -43,7 +43,7 @@ func (app *application) createVendorHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 	user := app.contextGetUser(r)
-	err = app.extended.Vendors.AddForUser(user.ID, vendor.ID)
+	err = app.extended.Vendors.AddOwner(user.ID, vendor.ID)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return

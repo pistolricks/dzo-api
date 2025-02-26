@@ -35,6 +35,7 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodPost, "/v1/maps/position", app.requirePermission("vendors:write", app.positionMapHandler))
 
 	router.HandlerFunc(http.MethodPost, "/v1/users/find", app.requirePermission("vendors:read", app.showUserHandler))
+	router.HandlerFunc(http.MethodGet, "/v1/owners/:id", app.requirePermission("vendors:read", app.showOwnerModels))
 
 	router.HandlerFunc(http.MethodGet, "/v1/users/activate", app.showActivateUserHandler)
 	router.HandlerFunc(http.MethodPut, "/v1/users/activated", app.activateUserHandler)
