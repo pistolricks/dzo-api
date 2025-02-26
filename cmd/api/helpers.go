@@ -51,10 +51,10 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data envelo
 	return nil
 }
 
-func (app *application) fillGeoJSON(id string, jsonType string, position Position, data envelope) *geojson.Feature {
+func (app *application) fillGeoJSON(id string, profileName string, position Position, data envelope) *geojson.Feature {
 
 	feature := geojson.NewPointFeature([]float64{position.Longitude, position.Latitude})
-	feature.SetProperty(jsonType, data)
+	feature.SetProperty(profileName, data)
 	feature.ID = id
 	return feature
 }
@@ -70,7 +70,7 @@ func NewGeoJSON(position Position, data envelope, tags []string) ([]byte, error)
 func (app *application) writeGeoJSON(w http.ResponseWriter, status int, data envelope, headers http.Header, id string, position Position) error {
 
 	feature := geojson.NewPointFeature([]float64{position.Longitude, position.Latitude})
-	feature.SetProperty("type", data)
+	feature.SetProperty("profile", data)
 	feature.ID = id
 
 	js, err := feature.MarshalJSON()

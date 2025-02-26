@@ -227,8 +227,8 @@ func (app *application) updateUserPasswordHandler(w http.ResponseWriter, r *http
 func (app *application) userLogoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	user := app.contextClearUser(r)
-	if user == nil {
-
+	if user != nil {
+		return
 	}
 
 	err := app.writeJSON(w, http.StatusOK, envelope{"user": nil}, nil)
@@ -302,7 +302,7 @@ func (app *application) showOwnerModels(w http.ResponseWriter, r *http.Request) 
 
 	pos := Position{33.983841, -118.451424}
 
-	err = app.writeGeoJSON(w, http.StatusOK, envelope{"vendor": vendor}, nil, strconv.FormatInt(id, 10), pos)
+	err = app.writeGeoJSON(w, http.StatusOK, envelope{"user_id": id, "vendor": vendor}, nil, strconv.FormatInt(id, 10), pos)
 
 	if err != nil {
 
