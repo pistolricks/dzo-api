@@ -31,6 +31,11 @@ type Content struct {
 	UserID    int64      `json:"user_id"`
 }
 
+type ContentCollection struct {
+	Data     []*Content `json:"data"`
+	Metadata Metadata   `json:"metadata"`
+}
+
 func ValidateContent(v *validation.Validator, content *Content) {
 	v.Check(content.Name != "", "name", "is required")
 	v.Check(content.Size > 0, "size", "This content doesn't have any data to it")

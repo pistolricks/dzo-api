@@ -17,6 +17,8 @@ type Extended struct {
 	Profiles  ProfileModel
 	Owners    OwnerModel
 	Users     UserModel
+	ContentCollection
+	VendorCollection
 }
 
 func NewExtended(db *sql.DB) Extended {

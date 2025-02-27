@@ -302,7 +302,7 @@ func (app *application) showOwnerModels(w http.ResponseWriter, r *http.Request) 
 
 	pos := Position{33.983841, -118.451424}
 
-	err = app.writeGeoJSON(w, http.StatusOK, envelope{"user_id": id, "vendor": vendor}, nil, strconv.FormatInt(id, 10), pos)
+	err = app.writeGeoJSON(w, http.StatusOK, "profile", envelope{"user_id": id, "vendor": vendor}, nil, strconv.FormatInt(1, 10), pos)
 
 	if err != nil {
 

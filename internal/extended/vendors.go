@@ -20,6 +20,11 @@ type Vendor struct {
 	Version   int32     `json:"version"`
 }
 
+type VendorCollection struct {
+	Data     []*Vendor `json:"data"`
+	Metadata Metadata  `json:"metadata"`
+}
+
 func ValidateVendor(v *validation.Validator, vendor *Vendor) {
 	v.Check(vendor.Title != "", "title", "is required")
 

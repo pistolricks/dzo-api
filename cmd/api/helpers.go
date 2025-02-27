@@ -67,10 +67,10 @@ func NewGeoJSON(position Position, data envelope, tags []string) ([]byte, error)
 	return featureCollection.MarshalJSON()
 }
 
-func (app *application) writeGeoJSON(w http.ResponseWriter, status int, data envelope, headers http.Header, id string, position Position) error {
+func (app *application) writeGeoJSON(w http.ResponseWriter, status int, profileName string, data envelope, headers http.Header, id string, position Position) error {
 
 	feature := geojson.NewPointFeature([]float64{position.Longitude, position.Latitude})
-	feature.SetProperty("profile", data)
+	feature.SetProperty(profileName, data)
 	feature.ID = id
 
 	js, err := feature.MarshalJSON()

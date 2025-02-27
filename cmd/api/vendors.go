@@ -86,9 +86,36 @@ func (app *application) showVendorHandler(w http.ResponseWriter, r *http.Request
 		app.serverErrorResponse(w, r, err)
 		return
 	}
+	owner := app.contextGetUser(r)
+
+	item := new(extended.VendorCollection)
+	output := append(item.Data, vendor)
+	metadata := extended.Metadata{
+		CurrentPage:  1,
+		PageSize:     1,
+		FirstPage:    1,
+		LastPage:     1,
+		TotalRecords: 1,
+	}
+
+	item.Data = output
+	item.Metadata = metadata
+
+	var profileName = ""
+	env := envelope{}
+
+	if user.ID == owner.ID {
+		profileName = "profile"
+		env = envelope{"vendors": item}
+	} else {
+		profileName = "vendors"
+		env = envelope{"data": item.Data, "metadata": item.Metadata}
+
+	}
+
 	pos := Position{33.983841, -118.451424}
 
-	err = app.writeGeoJSON(w, http.StatusOK, envelope{"vendor": vendor, "user": user}, nil, strconv.FormatInt(vendor.ID, 10), pos)
+	err = app.writeGeoJSON(w, http.StatusOK, profileName, env, nil, strconv.FormatInt(vendor.ID, 10), pos)
 
 	// err = app.writeJSON(w, http.StatusOK, envelope{"vendor": vendor}, nil)
 	if err != nil {
@@ -220,7 +247,10 @@ func (app *application) listVendorsHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusOK, envelope{"vendors": vendors, "metadata": metadata}, nil)
+	pos := Position{33.983841, -118.451424}
+
+	err = app.writeGeoJSON(w, http.StatusOK, "vendors", envelope{"data": vendors, "metadata": metadata}, nil, strconv.FormatInt(int64(100), 10), pos)
+
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

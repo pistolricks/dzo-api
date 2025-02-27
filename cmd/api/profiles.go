@@ -69,7 +69,7 @@ func (app *application) showProfileHandler(w http.ResponseWriter, r *http.Reques
 
 	pos := Position{33.983841, -118.451424}
 
-	err = app.writeGeoJSON(w, http.StatusOK, envelope{"profile": profile}, nil, profile.ID, pos)
+	err = app.writeGeoJSON(w, http.StatusOK, "profile", envelope{"profile": profile}, nil, profile.ID, pos)
 
 	// err = app.writeJSON(w, http.StatusOK, envelope{"profile": profile}, nil)
 	if err != nil {

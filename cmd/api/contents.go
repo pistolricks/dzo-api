@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/pistolricks/go-api-template/internal/extended"
 	"github.com/pistolricks/validation"
+	"strconv"
 
 	"io"
 	"mime/multipart"
@@ -119,7 +120,7 @@ func (app *application) createFile(w http.ResponseWriter, r *http.Request, path 
 	return dst, nil
 }
 
-func (app *application) listContentsHandler(w http.ResponseWriter, r *http.Request) {
+func (app *application) showOwnerContentsHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		Hash     string
 		Name     string
@@ -157,7 +158,15 @@ func (app *application) listContentsHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusOK, envelope{"contents": contents, "metadata": metadata}, nil)
+	item := new(extended.ContentCollection)
+
+	item.Data = contents
+	item.Metadata = metadata
+
+	pos := Position{33.983841, -118.451424}
+
+	err = app.writeGeoJSON(w, http.StatusOK, "profile", envelope{"contents": item}, nil, strconv.FormatInt(int64(1), 10), pos)
+
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

@@ -30,7 +30,7 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodPost, "/v1/addresses/position", app.requirePermission("vendors:write", app.addressDetailsByCoordinates))
 	router.HandlerFunc(http.MethodPost, "/v1/addresses", app.requirePermission("vendors:write", app.createAddressHandler))
 
-	router.HandlerFunc(http.MethodGet, "/v1/contents", app.requirePermission("vendors:write", app.listContentsHandler))
+	router.HandlerFunc(http.MethodGet, "/v1/contents", app.requirePermission("vendors:write", app.showOwnerContentsHandler))
 	router.HandlerFunc(http.MethodPost, "/v1/upload/image", app.requirePermission("vendors:write", app.uploadImageHandler))
 	router.HandlerFunc(http.MethodPost, "/v1/maps/position", app.requirePermission("vendors:write", app.positionMapHandler))
 
