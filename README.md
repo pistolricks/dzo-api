@@ -26,6 +26,10 @@
     
 ]
 
+#### Email Server
+- 'https://maddy.email/'
+
+
 ### Business Profile
 
 - Job title
