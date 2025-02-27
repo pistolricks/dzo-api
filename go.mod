@@ -32,13 +32,16 @@ require (
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/mailru/easygo v0.0.0-20190618140210-3c14a0dc985f // indirect
 	github.com/mazznoer/csscolorparser v0.1.5 // indirect
+	github.com/nyaruka/phonenumbers v1.5.0 // indirect
 	github.com/speps/go-hashids v2.0.0+incompatible // indirect
 	github.com/tkrajina/gpxgo v1.4.0 // indirect
 	golang.org/x/crypto v0.33.0 // indirect
+	golang.org/x/exp v0.0.0-20240525044651-4c93da0ed11d // indirect
 	golang.org/x/image v0.24.0 // indirect
 	golang.org/x/net v0.35.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
+	google.golang.org/protobuf v1.34.1 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
