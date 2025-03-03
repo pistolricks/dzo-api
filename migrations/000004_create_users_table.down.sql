@@ -1,1 +1,2 @@
+DROP TABLE IF EXISTS users_vendors;
 DROP TABLE IF EXISTS users;
