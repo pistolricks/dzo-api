@@ -69,21 +69,32 @@ type DetailsResult struct {
 }
 
 type SearchResult struct {
-	Address     map[string]any `json:"address"`
-	Extratags   map[string]any `json:"extratags"`
-	Boundingbox []string       `json:"boundingbox"`
-	Geometry    map[string]any `json:"geometry"`
-	Class       string         `json:"class"`
-	DisplayName string         `json:"display_name"`
-	Importance  float64        `json:"importance"`
-	Lat         string         `json:"lat"`
-	Licence     string         `json:"licence"`
-	Lon         string         `json:"lon"`
-	OsmID       int            `json:"osm_id"`
-	OsmType     string         `json:"osm_type"`
-	PlaceID     int            `json:"place_id"`
-	Svg         string         `json:"svg"`
-	Type        string         `json:"type"`
+	Address       map[string]any `json:"address"`
+	Extratags     map[string]any `json:"extratags"`
+	Boundingbox   []string       `json:"boundingbox"`
+	Geometry      map[string]any `json:"geometry"`
+	Class         string         `json:"class"`
+	DisplayName   string         `json:"display_name"`
+	Importance    float64        `json:"importance"`
+	Lat           string         `json:"lat"`
+	Licence       string         `json:"licence"`
+	Lon           string         `json:"lon"`
+	OsmID         int            `json:"osm_id"`
+	OsmType       string         `json:"osm_type"`
+	PlaceID       int            `json:"place_id"`
+	Svg           string         `json:"svg"`
+	Type          string         `json:"type"`
+	Category      string         `json:"category"`
+	AddressType   string         `json:"addresstype"`
+	Name          string         `json:"name"`
+	Addresstags   map[string]any `json:"addresstags,omitempty"`
+	ParentPlaceID int            `json:"parent_place_id"` // ParentPlaceID is the unique identifier for the parent place.
+	AdminLevel    any            `json:"admin_level"`     // AdminLevel is the administrative level of the place.
+	Localname     string         `json:"localname"`       // Localname is the local name of the place.
+	Centroid      struct {
+		Type        string    `json:"type"`
+		Coordinates []float64 `json:"coordinates"`
+	} `json:"centroid"`
 }
 
 type LookupResult struct {
