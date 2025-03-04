@@ -78,15 +78,18 @@ func GetDetailsWithCoordinates(lat float64, lon float64) (*osm.ReverseResult, er
 	return result, err
 }
 
-func GetAddressOSM() ([]osm.LookupResult, error) {
+func GetAddressOSM(bb string, poiKey string, poiID, street string, locality string, aa string, postal string, country string) ([]osm.SearchResult, error) {
 	ctx := context.Background()
-	result, err := osm.Lookup(ctx, "way", 123456789) // Example OSM type and ID
+	results, err := osm.Lookup(ctx, bb, poiKey, poiID, street, locality, aa, postal, country) // Example OSM type and ID
 	if err != nil {
 		fmt.Println("Error:", err)
-
+		return nil, nil
 	}
-	fmt.Println("Lookup Result:", result)
-	return result, err
+	for _, result := range results {
+		fmt.Println("Search Result:", result)
+	}
+
+	return results, err
 }
 
 type AddressModel struct {

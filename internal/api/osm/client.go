@@ -68,17 +68,26 @@ func Search(ctx context.Context, q string, v string, opts ...optFunc) ([]SearchR
 // Lookup retrieves information about a specific OpenStreetMap object using its type and ID.
 // It takes a context, OSM type, OSM ID, and optional functions for additional configurations.
 // It returns a LookupResult and an error if the request fails.
-func Lookup(ctx context.Context, osmType string, osmID int, opts ...optFunc) ([]LookupResult, error) {
+func Lookup(ctx context.Context, bb string, poiKey string, poiID, street string, locality string, aa string, postal string, country string, opts ...optFunc) ([]SearchResult, error) {
 	urlVals := url.Values{}
 	urlVals.Set("format", "json")
-	urlVals.Set("osm_type", osmType)
-	urlVals.Set("osm_id", fmt.Sprintf("%d", osmID))
-	res, err := runRequest[[]LookupResult](ctx, apiUrl+"lookup?"+urlVals.Encode(), opts...)
+	urlVals.Set("addressdetails", "1")
+	urlVals.Set("extratags", "1")
+	urlVals.Set("polygon_svg", "1")
+	urlVals.Set(poiKey, poiID)
+	urlVals.Set("viewbox", bb)
+	urlVals.Set("street", street)
+	urlVals.Set("city", locality)
+	urlVals.Set("state", aa)
+	urlVals.Set("postalcode", postal)
+	urlVals.Set("country", country)
+	urlVals.Set("dedupe", "1")
+	res, err := runRequest[[]SearchResult](ctx, apiUrl+"search?"+urlVals.Encode(), opts...)
 	if err != nil {
 		return nil, err
 	}
 	if res == nil {
-		return []LookupResult{}, nil
+		return []SearchResult{}, nil
 	}
 	return *res, nil
 }

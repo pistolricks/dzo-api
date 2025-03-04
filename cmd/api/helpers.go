@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
-	"github.com/nyaruka/phonenumbers"
 	geojson "github.com/paulmach/go.geojson"
 	"github.com/pistolricks/validation"
 	"github.com/speps/go-hashids/v2"
@@ -251,20 +250,4 @@ func (app *application) handleHashString(text string) uint32 {
 	algorithm := fnv.New32a()
 	algorithm.Write([]byte(text))
 	return algorithm.Sum32()
-}
-
-func (app *application) handlePhoneParse(input string, region string) *phonenumbers.PhoneNumber {
-
-	num, err := phonenumbers.Parse(input, region)
-	if err != nil {
-		app.logger.Error(err.Error())
-	}
-	return num
-}
-
-func (app *application) handleIntlFormat(num *phonenumbers.PhoneNumber) string {
-
-	formattedNum := phonenumbers.Format(num, phonenumbers.NATIONAL)
-
-	return formattedNum
 }

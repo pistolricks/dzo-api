@@ -60,7 +60,7 @@ func (app *application) addressDetailsByCoordinates(w http.ResponseWriter, r *ht
 	res, err := extended.GetDetailsWithCoordinates(lat64, lon64)
 
 	pos := Position{lat64, lon64}
-	geo := app.fillGeoJSON(strconv.FormatInt(int64(res.OsmID), 10), "loc", pos, envelope{"place_id": strconv.FormatInt(int64(res.PlaceID), 10), "type": res.Type, "osm_type": res.OsmType, "display": res.DisplayName, "extratags": res.Extratags, "importance": res.Importance, "address": res.Address, "boundingbox": res.Boundingbox, "viewbox": ""})
+	geo := app.fillGeoJSON(strconv.FormatInt(int64(res.OsmID), 10), "place", pos, envelope{"place_id": strconv.FormatInt(int64(res.PlaceID), 10), "type": res.Type, "osm_type": res.OsmType, "display": res.DisplayName, "extratags": res.Extratags, "importance": res.Importance, "address": res.Address, "boundingbox": res.Boundingbox, "viewbox": ""})
 
 	err = app.writeJSON(w, http.StatusCreated, envelope{"query": input, "results": geo, "errors": err}, headers)
 	if err != nil {
@@ -94,7 +94,7 @@ func (app *application) addressSearchHandler(w http.ResponseWriter, r *http.Requ
 
 		pos := Position{lat64, lon64}
 
-		geo := app.fillGeoJSON(strconv.FormatInt(int64(res[key].OsmID), 10), "places", pos, envelope{"place_id": strconv.FormatInt(int64(res[key].PlaceID), 10), "type": res[key].Type, "osm_type": res[key].OsmType, "display": res[key].DisplayName, "importance": res[key].Importance, "address": res[key].Address, "extratags": res[key].Extratags, "boundingbox": res[key].Boundingbox, "svg": res[key].Svg})
+		geo := app.fillGeoJSON(strconv.FormatInt(int64(res[key].OsmID), 10), "place", pos, envelope{"place_id": strconv.FormatInt(int64(res[key].PlaceID), 10), "type": res[key].Type, "osm_type": res[key].OsmType, "display": res[key].DisplayName, "importance": res[key].Importance, "address": res[key].Address, "extratags": res[key].Extratags, "boundingbox": res[key].Boundingbox, "svg": res[key].Svg})
 		featureCollection.AddFeature(geo)
 
 	}
@@ -109,35 +109,41 @@ func (app *application) createAddressHandler(w http.ResponseWriter, r *http.Requ
 	headers := make(http.Header)
 
 	var input struct {
-		StreetAddress      []string `json:"street_address"`
-		Locality           string   `json:"locality"`
-		AdministrativeArea string   `json:"administrative_area"`
-		PostCode           string   `json:"post_code"`
-		Country            string   `json:"country"`
+		Viewbox            string `json:"viewbox"`
+		PoiKey             string `json:"poi_key"`
+		PoiID              string `json:"poi_id"`
+		StreetAddress      string `json:"street_address"`
+		Locality           string `json:"locality"`
+		AdministrativeArea string `json:"administrative_area"`
+		PostCode           string `json:"post_code"`
+		Country            string `json:"country"`
 	}
-
 	err := app.readJSON(w, r, &input)
 	if err != nil {
 		app.badRequestResponse(w, r, err)
 		return
 	}
-	/*
-		addr := &extended.Address{
-			StreetAddress:      input.StreetAddress,
-			Locality:           input.Locality,
-			AdministrativeArea: input.AdministrativeArea,
-			PostCode:           input.PostCode,
-			Country:            input.Country,
-		}
 
-		 address, ev := extended.ValidateAddress(addr)
-	*/
-	res, errors := extended.GetAddressOSM()
+	res, errors := extended.GetAddressOSM(input.Viewbox, input.PoiKey, input.PoiID, input.StreetAddress, input.Locality, input.AdministrativeArea, input.PostCode, input.Country)
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"results": res, "errors": errors}, headers)
+	featureCollection := geojson.NewFeatureCollection()
+
+	for key := range res {
+
+		lat64, _ := strconv.ParseFloat(res[key].Lat, 64)
+		lon64, _ := strconv.ParseFloat(res[key].Lon, 64)
+
+		pos := Position{lat64, lon64}
+
+		geo := app.fillGeoJSON(strconv.FormatInt(int64(res[key].OsmID), 10), "place", pos, envelope{"place_id": strconv.FormatInt(int64(res[key].PlaceID), 10), "type": res[key].Type, "osm_type": res[key].OsmType, "display": res[key].DisplayName, "importance": res[key].Importance, "address": res[key].Address, "extratags": res[key].Extratags, "boundingbox": res[key].Boundingbox, "svg": res[key].Svg})
+		featureCollection.AddFeature(geo)
+
+	}
+	err = app.writeJSON(w, http.StatusCreated, envelope{"query": input, "results": featureCollection, "errors": errors}, headers)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
+
 }
 
 func (app *application) showAddressForm(w http.ResponseWriter, r *http.Request) {
