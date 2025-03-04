@@ -94,27 +94,25 @@ func (app *application) addressSearchHandler(w http.ResponseWriter, r *http.Requ
 
 		pos := Position{lat64, lon64}
 
-		if res[key].Type != "yes" {
-			geo := app.fillGeoJSON(strconv.FormatInt(int64(res[key].OsmID), 10), "place", pos, envelope{
-				"place_id":        strconv.FormatInt(int64(res[key].PlaceID), 10),
-				"type":            res[key].Type,
-				"osm_type":        res[key].OsmType,
-				"importance":      res[key].Importance,
-				"address":         res[key].Address,
-				"extratags":       res[key].Extratags,
-				"boundingbox":     res[key].Boundingbox,
-				"display_name":    res[key].DisplayName,
-				"category":        res[key].Category,
-				"address_type":    res[key].AddressType,
-				"centroid":        res[key].Centroid,
-				"addresstags":     res[key].Addresstags,
-				"name":            res[key].Name,
-				"parent_place_id": res[key].ParentPlaceID,
-				"admin_level":     res[key].AdminLevel,
-				"local_name":      res[key].Localname,
-				"svg":             res[key].Svg})
-			featureCollection.AddFeature(geo)
-		}
+		geo := app.fillGeoJSON(strconv.FormatInt(int64(res[key].OsmID), 10), "place", pos, envelope{
+			"place_id":        strconv.FormatInt(int64(res[key].PlaceID), 10),
+			"type":            res[key].Type,
+			"osm_type":        res[key].OsmType,
+			"importance":      res[key].Importance,
+			"address":         res[key].Address,
+			"extratags":       res[key].Extratags,
+			"boundingbox":     res[key].Boundingbox,
+			"display_name":    res[key].DisplayName,
+			"category":        res[key].Category,
+			"address_type":    res[key].AddressType,
+			"centroid":        res[key].Centroid,
+			"addresstags":     res[key].Addresstags,
+			"name":            res[key].Name,
+			"parent_place_id": res[key].ParentPlaceID,
+			"admin_level":     res[key].AdminLevel,
+			"local_name":      res[key].Localname,
+			"svg":             res[key].Svg})
+		featureCollection.AddFeature(geo)
 	}
 
 	err = app.writeJSON(w, http.StatusCreated, envelope{"query": input.Search, "collection": featureCollection, "errors": errors}, headers)
@@ -153,30 +151,28 @@ func (app *application) createAddressHandler(w http.ResponseWriter, r *http.Requ
 
 		pos := Position{lat64, lon64}
 
-		if res[key].Type != "yes" {
-			geo := app.fillGeoJSON(strconv.FormatInt(int64(res[key].OsmID), 10), "place", pos, envelope{
-				"place_id":        strconv.FormatInt(int64(res[key].PlaceID), 10),
-				"type":            res[key].Type,
-				"osm_type":        res[key].OsmType,
-				"display_name":    res[key].DisplayName,
-				"importance":      res[key].Importance,
-				"address":         res[key].Address,
-				"extratags":       res[key].Extratags,
-				"category":        res[key].Category,
-				"boundingbox":     res[key].Boundingbox,
-				"svg":             res[key].Svg,
-				"address_type":    res[key].AddressType,
-				"centroid":        res[key].Centroid,
-				"addresstags":     res[key].Addresstags,
-				"name":            res[key].Name,
-				"parent_place_id": res[key].ParentPlaceID,
-				"admin_level":     res[key].AdminLevel,
-				"local_name":      res[key].Localname,
-			})
-			featureCollection.AddFeature(geo)
-		}
-
+		geo := app.fillGeoJSON(strconv.FormatInt(int64(res[key].OsmID), 10), "place", pos, envelope{
+			"place_id":        strconv.FormatInt(int64(res[key].PlaceID), 10),
+			"type":            res[key].Type,
+			"osm_type":        res[key].OsmType,
+			"display_name":    res[key].DisplayName,
+			"importance":      res[key].Importance,
+			"address":         res[key].Address,
+			"extratags":       res[key].Extratags,
+			"category":        res[key].Category,
+			"boundingbox":     res[key].Boundingbox,
+			"svg":             res[key].Svg,
+			"address_type":    res[key].AddressType,
+			"centroid":        res[key].Centroid,
+			"addresstags":     res[key].Addresstags,
+			"name":            res[key].Name,
+			"parent_place_id": res[key].ParentPlaceID,
+			"admin_level":     res[key].AdminLevel,
+			"local_name":      res[key].Localname,
+		})
+		featureCollection.AddFeature(geo)
 	}
+
 	err = app.writeJSON(w, http.StatusCreated, envelope{"query": input, "collection": featureCollection, "errors": errors}, headers)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)

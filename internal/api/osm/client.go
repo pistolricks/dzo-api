@@ -74,7 +74,7 @@ func Lookup(ctx context.Context, bb string, poiKey string, poiID, street string,
 	urlVals.Set("addressdetails", "1")
 	urlVals.Set("extratags", "1")
 	urlVals.Set("polygon_svg", "1")
-	urlVals.Set(poiKey, poiID)
+	urlVals.Set("amenity", poiID)
 	urlVals.Set("viewbox", bb)
 	urlVals.Set("street", street)
 	urlVals.Set("city", locality)
